@@ -15,6 +15,14 @@ When invoked with `/catlazy5-experience`, inspect UI/frontend flows against **`d
    - `[ux-empty]`: no contextual empty state when a list or screen has no data.
    - `[ux-inconsistent]`: action placement or terminology conflicts with the rest of the product and violates familiar or internal consistency.
 
+### Standards Resolution
+
+Resolve `docs/design/user_experience/` in this order before auditing:
+
+1. Use the target repository’s `docs/design/user_experience/` when it exists.
+2. Otherwise, use the canonical `docs/design/user_experience/` directory in the installed Catlazy bundle, beside its `skills/` directory.
+3. Do not fall back to generic UX or product principles while the bundled standard is available.
+4. State whether project or bundled standards were used in the Inspection Summary.
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Do not output conversational text before `### 🔎 Inspection Summary`. Respond in the user’s language unless another language is requested.

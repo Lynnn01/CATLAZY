@@ -16,6 +16,14 @@ When invoked with `/catlazy3-architecture`, inspect the entire repository and co
    - `[arch-anemic]`: a Domain entity has only getters/setters and no meaningful business behavior.
    - `[arch-coupling]`: modules are too tightly coupled and should communicate through ports or explicit contracts.
 
+### Standards Resolution
+
+Resolve `docs/architecture/` in this order before auditing:
+
+1. Use the target repository’s `docs/architecture/` when it exists.
+2. Otherwise, use the canonical `docs/architecture/` directory in the installed Catlazy bundle, beside its `skills/` directory.
+3. Do not fall back to generic Clean Architecture advice while the bundled standard is available.
+4. State whether project or bundled standards were used in the Inspection Summary.
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Follow this exact structure. Do not output conversational text before the `### 🔎 Inspection Summary` heading. Respond in the user’s language unless the user requests another language.

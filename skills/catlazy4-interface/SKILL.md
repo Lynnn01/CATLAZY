@@ -16,6 +16,14 @@ When invoked with `/catlazy4-interface`, inspect all UI and frontend code agains
    - `[ui-motion]`: animation longer than 300ms, purposeless motion, or no `prefers-reduced-motion` support.
    - `[ui-spacing]`: cramped layout or spacing that violates the project grid.
 
+### Standards Resolution
+
+Resolve `docs/design/user_interface/` in this order before auditing:
+
+1. Use the target repository’s `docs/design/user_interface/` when it exists.
+2. Otherwise, use the canonical `docs/design/user_interface/` directory in the installed Catlazy bundle, beside its `skills/` directory.
+3. Do not fall back to generic UI advice while the bundled standard is available.
+4. State whether project or bundled standards were used in the Inspection Summary.
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Do not output conversational text before `### 🔎 Inspection Summary`. Respond in the user’s language unless another language is requested.

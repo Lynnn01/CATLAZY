@@ -14,6 +14,14 @@ When invoked, review only the latest changes (`git diff` or uncommitted changes)
 4. Perform lazy verification: search references before deletions, inspect custom component contracts, reuse existing styles, check i18n before hard-coded user text, and verify auth/RLS filters before data access.
 5. Check security, data-loss handling, and layer boundaries.
 
+### Standards Resolution
+
+Before reviewing, resolve Catlazy standards in this order:
+
+1. Use the target repository’s `docs/architecture/`, `docs/design/user_interface/`, and `docs/design/user_experience/` when they exist.
+2. If any of those directories are absent, use the matching canonical directories in the installed Catlazy bundle: the `docs/` directory beside the bundle’s `skills/` directory.
+3. Do not replace a missing target-repository document with generic Clean Architecture or product principles when the bundled Catlazy document is available.
+4. State which source of standards was used in the Inspection Summary.
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Do not output conversational text before the required headings. Respond in the user’s language unless another language is requested.
