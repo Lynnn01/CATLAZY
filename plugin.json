@@ -1,0 +1,9 @@
+{
+    "name":  "agent-documents",
+    "version":  "1.1.0",
+    "description":  "Universal Architecture, Design Systems, and Catlazy Skills for any project",
+    "author":  "Lynnn01",
+    "skills_paths":  [
+                         "skills"
+                     ]
+}

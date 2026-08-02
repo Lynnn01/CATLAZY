@@ -1,0 +1,24 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Antigravity temp/brain files (just in case)
+brain/
+scratch/
+
+# Environment files
+.env
+.env.*
+!.env.example
+plans/
