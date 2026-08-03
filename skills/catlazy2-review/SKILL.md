@@ -35,6 +35,8 @@ catlazy2-review [report|fix-safe] [--scope ui|backend|api|full]
 
 Resolve values in this order: explicit arguments, optional `.catlazy/task.json`, files explicitly named by the user, then candidate changed files. If the final fallback contains unrelated dirty changes, show the candidate file list and ask for confirmation before reviewing.
 
+Treat the resolved `files` as the approved write scope when the task context was approved. Compare task changes against `base`, report any task edit outside `files`, and do not count pre-existing unrelated dirty files as task output. `report` may read outside scope for evidence but must not write.
+
 - `report` is the default and never edits files.
 - `fix-safe` may repair only local, low-risk findings inside the resolved scope, then reruns this review and the selected validation profile.
 - Never auto-fix data changes, authentication/authorization, public contracts, dependencies, migrations, generated files, or anything outside scope.
@@ -51,6 +53,36 @@ Resolve the profile from an explicit argument, the optional task manifest, then 
 - `full`: all applicable profiles for the resolved files.
 
 Run validation only after `fix-safe`, only against the resolved scope where the tool supports file targeting, and report unavailable commands rather than substituting unrelated checks.
+
+For `ultra`, add the smallest relevant negative-path validation for critical calculations, financial logic, authorization, parsers, validators, or regression fixes. Run a fault probe only when the approved task explicitly requests one. Prefer an existing mutation tool or disposable copy; never mutate a live dirty worktree, and verify that no probe artifact remains.
+
+### Hollow Implementation Check
+
+Inspect task-introduced code for completion-shaped placeholders. Search heuristically, then inspect context before reporting a finding:
+
+- new `TODO` or `FIXME` markers that defer required behavior;
+- `pass`, `NotImplementedError`, empty handlers, or swallowed exceptions;
+- hard-coded success responses or production paths returning fake data;
+- UI controls without their promised action;
+- skipped tests or assertions that cannot fail meaningfully;
+- mocks, fixtures, or placeholder values leaking into production paths.
+
+Do not flag intentional framework hooks, documented Catlazy deferrals, test doubles confined to tests, or unrelated pre-existing code. A hollow implementation that prevents the requested behavior from working is at least P2 and prevents `CATLAZY_DONE`.
+
+### Catlazy Finish Contract
+
+Use one final status for the resolved task:
+
+- `CATLAZY_DONE`: the approved scope is respected, all required validation passes, the evidence is current, the final diff is reviewed, generated files are accounted for, and no P1 or P2 finding remains.
+- `CATLAZY_BLOCKED: <reason>`: an external dependency or required decision prevents completion.
+- `CATLAZY_UNVERIFIED: <missing check>`: the implementation may be complete, but required validation is missing, stale, unavailable, or failing.
+
+Keep the evidence lightweight. For each applicable validation, report the command, result or exit status, and run time. In `report` mode, use only evidence available from the current task and do not imply that review-only inspection executed validation.
+
+Apply the last-edit rule: validation counts only when it ran after the last relevant edit in the resolved files. If `fix-safe` changes a file after validation, rerun only the affected profile. If freshness cannot be established, use `CATLAZY_UNVERIFIED`.
+
+Catlazy is a workflow guardrail, not filesystem enforcement. Verify the final diff against the resolved file list and report any out-of-scope change without claiming ownership of unrelated dirty files.
+
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Do not output conversational text before the required headings. Respond in the user’s language unless another language is requested.
@@ -67,6 +99,11 @@ Analyze the changed files with evidence and check each applicable UI, UX, archit
 - `🐈 ✅` / `🐈 ❌` / `🐈 ⚪` [api-guess] ...
 - `🐈 ✅` / `🐈 ❌` / `🐈 ⚪` [style-invent] ...
 - `🐈 ✅` / `🐈 ❌` / `🐈 ⚪` [hardcode-text] ...
+- `🐈 ✅` / `🐈 ❌` / `🐈 ⚪` [hollow-implementation] ...
 - `🐈 ✅` / `🐈 ❌` / `🐈 ⚪` [Architecture] ...
 
-If an item fails, include file and line, reason, violated rule, and the smallest Catlazy fix. Even when everything passes, always output both required sections. End a clean review with: **“The code is simple and follows the project rules.”**
+### 🐈 Catlazy Finish Check
+
+Report scope, validation, freshness, diff review, generated files, and unresolved P1/P2 findings as `PASS`, `FAIL`, or `N/A`. Include the lightweight evidence and end with exactly one Catlazy status.
+
+If an item fails, include file and line, reason, violated rule, and the smallest Catlazy fix. Always output all three required sections. For a clean review, include **“The code is simple and follows the project rules.”** before the final Catlazy status.

@@ -59,6 +59,8 @@ Then use the host’s file-writing capability to create `docs/plans/YYYY-MM-DD-<
 
 Wait for the user to read the artifact and press **Proceed/Approve** before writing any planned source changes.
 
+After approval, show the implementation paths and treat them as the approved write scope. Read other files when discovery requires it, but do not write them. If another path becomes necessary, stop before editing it, explain the scope change, update the plan or task context, and obtain approval. At the end, compare the task diff with the recorded baseline and approved paths.
+
 ### Task Context for Follow-up Work
 
 For work that will be reviewed or fixed later, record a minimal task context in the plan artifact:
@@ -74,6 +76,8 @@ For work that will be reviewed or fixed later, record a minimal task context in 
 ```
 
 This context is optional. It may be saved as `.catlazy/task.json` only when the user wants the task to persist across messages. Otherwise, keep it in the approved plan and command arguments. Never infer that every dirty worktree file belongs to the active task.
+
+The `files` array records the user-approved write scope; it is not a repository-wide scan target. The optional `evidence` array may record validation objects with `profile`, `command`, `exitStatus`, and ISO-8601 `ranAt` fields. Append evidence only after the command runs, and replace or rerun stale evidence after a relevant edit.
 
 ## 🚫 Anti-Patterns
 

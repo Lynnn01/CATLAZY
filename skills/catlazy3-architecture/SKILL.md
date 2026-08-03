@@ -28,6 +28,9 @@ Resolve `docs/architecture/` in this order before auditing:
 ### Task Context
 
 Accept `--scope ui|backend|api|full`, `--base <commit-or-ref>`, and `--files <path,...>`. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved candidate files before a broad audit. For `ui` scope, mark backend-only architecture checks as not applicable unless the selected UI files cross a boundary.
+
+If the user approves fixes, treat the approved `files` as the write scope, stop before expanding it, and compare the final task diff with `base`. Run affected validation after the last edit and apply the Catlazy Finish Contract from the target or bundled `.rules/AGENTS.md`. A read-only audit keeps the audit format and does not claim implementation completion.
+
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Follow this exact structure. Do not output conversational text before the `### 🔎 Inspection Summary` heading. Respond in the user’s language unless the user requests another language.

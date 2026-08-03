@@ -15,3 +15,5 @@ Use this skill when large logs, JSON, or LLM API traffic may exceed a useful con
 5. Verify that compressed output preserves errors, identifiers, ordering, and actionable details.
 
 Headroom is optional. The skill does not modify application code or environment secrets without explicit approval.
+
+If the user approves configuration edits, show the approved files, treat them as the write scope, and stop before expanding it. Validate the configured path after the last edit, inspect the final diff against the task baseline, and apply the Catlazy Finish Contract. An assessment-only run does not claim implementation completion.

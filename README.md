@@ -75,7 +75,7 @@ The skills are ordered along a practical software-development lifecycle:
 | **8** | `/catlazy8-agent` | **System care:** review and simplify the agent rules themselves. |
 | **9** | `/catlazy9-compress` | **Resource saving:** assess or configure optional Headroom compression. |
 
-You can type `/catlazy`, `/catlazy off`, or `/catlazy ultra` at any time to change the main operating mode.
+You can type `/catlazy`, `/catlazy off`, or `/catlazy ultra` at any time to change the main operating mode. `lite` reviews the final diff and states missing checks; `full` adds approved scope, current validation evidence, and a finish status; `ultra` adds hollow review and critical negative-path validation. Fault probes remain optional and must be approved and isolated from a live dirty worktree.
 
 ### Task-scoped reviews
 
@@ -88,9 +88,29 @@ Use Catlazy reviews with an explicit task context when the worktree is dirty:
 
 `report` only reports findings. `fix-safe` may repair small, local, low-risk findings in the selected files and then reviews them again. It never auto-changes migrations, dependencies, generated files, authentication, public contracts, or files outside scope.
 
-For a task that spans several messages, copy `.catlazy/task.json.example` to `.catlazy/task.json` and set its baseline, scope, files, report format, and validation profile. The manifest is optional; it exists to avoid treating every dirty worktree file as part of the current task.
+For a task that spans several messages, copy `.catlazy/task.json.example` to `.catlazy/task.json` and set its baseline, scope, files, report format, and validation profile. After user approval, `files` is the approved write scope: Catlazy may read elsewhere for discovery, but it stops and asks before writing another path. The manifest is optional and must not turn unrelated dirty worktree files into task output.
 
 Validation profiles are selected from the task context after Catlazy discovers the project’s real scripts: `ui` runs relevant typecheck and lint, `backend` adds tests and build, `api` adds contract/type checks, and `full` runs all applicable checks. Catlazy reports missing scripts instead of guessing commands.
+
+The optional `evidence` array keeps short validation records using `profile`, `command`, `exitStatus`, and ISO-8601 `ranAt`. Evidence is current only when it was recorded after the last relevant edit; later changes require rerunning only the affected profile.
+
+### Catlazy finish contract
+
+Before reporting completion, Catlazy checks the approved scope, applicable validation, evidence freshness, final diff, generated files, and unresolved P1/P2 findings:
+
+```text
+🐈 Scope       PASS
+🐈 Validation  PASS
+🐈 Freshness   PASS
+🐈 Diff        PASS
+🐈 Generated   PASS
+🐈 P1/P2       PASS
+CATLAZY_DONE
+```
+
+If an external dependency or decision prevents completion, it reports `CATLAZY_BLOCKED: <reason>`. If required evidence is missing, stale, unavailable, or failing, it reports `CATLAZY_UNVERIFIED: <missing check>`. Catlazy rules and skills are workflow guardrails, not filesystem enforcement, so the final diff remains the source of truth for scope.
+
+In `ultra`, `catlazy2-review` also checks for completion-shaped placeholders such as required `TODO` markers, empty handlers, fake success responses, inactive UI controls, meaningless skipped tests, and production mock data. Optional fault probes are reserved for critical calculations, financial logic, authorization, parsers, validators, and regression fixes.
 
 ---
 

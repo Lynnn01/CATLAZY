@@ -11,8 +11,17 @@ Display the one-shot quick reference for `catlazy`.
 
 ### 🎚️ Intensity Levels
 
-- **`/catlazy [lite|full|ultra|off]`:** change the AI’s laziness level. See `/catlazy` or `skills/catlazy/SKILL.md` for the full rules.
+- **`lite`:** final diff plus an honest statement of checks not run.
+- **`full` (default):** approved write scope, applicable validation, last-edit freshness, and the Catlazy finish status.
+- **`ultra`:** `full` plus hollow review, relevant negative-path validation, and an optional approved fault probe for critical logic.
+- **`off`:** disable extra Catlazy behavior without disabling project safety rules.
 - **Incremental Decision Trail:** complex work proceeds one issue at a time through Observe → Decide → Plan → Apply → Verify → Continue; small work uses Plan → Apply → Verify.
+
+### 🐈 Finish Status
+
+- `CATLAZY_DONE`: scope, current validation, final diff, generated files, and P1/P2 review pass.
+- `CATLAZY_BLOCKED: <reason>`: an external dependency or required decision prevents completion.
+- `CATLAZY_UNVERIFIED: <missing check>`: required evidence is missing, stale, unavailable, or failing.
 
 ### 🛠️ Commands
 
