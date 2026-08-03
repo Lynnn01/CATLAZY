@@ -28,12 +28,14 @@ Before reviewing, resolve Catlazy standards in this order:
 Resolve the task context before inspecting a diff. Accept these optional arguments:
 
 ```text
-catlazy2-review [report|fix-safe] [--scope ui|backend|api|full]
+catlazy2-review [report|fix-safe] [--scope ui|backend|api|docs|full]
                 [--base <commit-or-ref>] [--files <path,...>]
                 [--format normal|strict] [--language <code>]
 ```
 
-Resolve values in this order: explicit arguments, optional `.catlazy/task.json`, files explicitly named by the user, then candidate changed files. If the final fallback contains unrelated dirty changes, show the candidate file list and ask for confirmation before reviewing.
+Resolve values in this order: explicit arguments, optional `.catlazy/task.json`, files explicitly named by the user, then candidate changed files. Candidate changes include tracked and untracked files. If the final fallback contains unrelated dirty changes, show the candidate file list and ask for confirmation before reviewing.
+
+Resolve and announce the mode once before inspection. The mode is locked for that review run: do not rename a `fix-safe` pass to `report` afterward. If `fix-safe` edits anything, finish that pass and start a new final `report` review against the resulting diff.
 
 Treat the resolved `files` as the approved write scope when the task context was approved. Compare task changes against `base`, report any task edit outside `files`, and do not count pre-existing unrelated dirty files as task output. `report` may read outside scope for evidence but must not write.
 
@@ -50,9 +52,12 @@ Resolve the profile from an explicit argument, the optional task manifest, then 
 - `ui`: relevant typecheck and lint.
 - `backend`: relevant lint, tests, and build.
 - `api`: relevant lint, tests, and contract/type checks.
+- `docs`: available skill/frontmatter, link, Markdown, JSON, and diff checks; runtime lint, tests, and build are `N/A` unless the changed files affect runtime behavior.
 - `full`: all applicable profiles for the resolved files.
 
-Run validation only after `fix-safe`, only against the resolved scope where the tool supports file targeting, and report unavailable commands rather than substituting unrelated checks.
+An implementation or `fix-safe` pass runs applicable validation after its last edit and records the evidence. A final `report` review consumes that current evidence; it may run a confirmed non-mutating check when evidence is missing, but must say that the report ran it. Never run a mutating check in `report` mode. Keep validation inside the resolved scope where the tool supports file targeting, and report unavailable commands rather than substituting unrelated checks.
+
+Build an expected-check list from the resolved profile and files. Report every expected check as `PASS`, `FAIL`, or `N/A`; every `N/A` must include the concrete reason. A mutating lint script may be `N/A` when it cannot be safely scoped, but do not treat that as a pass or silently replace it.
 
 For `ultra`, add the smallest relevant negative-path validation for critical calculations, financial logic, authorization, parsers, validators, or regression fixes. Run a fault probe only when the approved task explicitly requests one. Prefer an existing mutation tool or disposable copy; never mutate a live dirty worktree, and verify that no probe artifact remains.
 
@@ -77,7 +82,11 @@ Use one final status for the resolved task:
 - `CATLAZY_BLOCKED: <reason>`: an external dependency or required decision prevents completion.
 - `CATLAZY_UNVERIFIED: <missing check>`: the implementation may be complete, but required validation is missing, stale, unavailable, or failing.
 
+Use `CATLAZY_BLOCKED` when an external dependency or required user decision prevents progress. Otherwise use `CATLAZY_UNVERIFIED` for missing or stale evidence; do not use both for one run.
+
 Keep the evidence lightweight. For each applicable validation, report the command, result or exit status, and run time. In `report` mode, use only evidence available from the current task and do not imply that review-only inspection executed validation.
+
+For any build or generator evidence, state whether tracked generated paths were snapshotted before the command and whether the final diff contains generated churn. Missing generated-output accounting prevents `CATLAZY_DONE` when such a command ran. If no build or generator ran because none applies to the resolved files, report generated output as `N/A` with that reason.
 
 Apply the last-edit rule: validation counts only when it ran after the last relevant edit in the resolved files. If `fix-safe` changes a file after validation, rerun only the affected profile. If freshness cannot be established, use `CATLAZY_UNVERIFIED`.
 
@@ -104,6 +113,6 @@ Analyze the changed files with evidence and check each applicable UI, UX, archit
 
 ### 🐈 Catlazy Finish Check
 
-Report scope, validation, freshness, diff review, generated files, and unresolved P1/P2 findings as `PASS`, `FAIL`, or `N/A`. Include the lightweight evidence and end with exactly one Catlazy status.
+Report scope, validation, freshness, diff review, generated files, and unresolved P1/P2 findings as `PASS`, `FAIL`, or `N/A`. Give a concrete reason for every `N/A`. Include the lightweight evidence and end with exactly one Catlazy status.
 
 If an item fails, include file and line, reason, violated rule, and the smallest Catlazy fix. Always output all three required sections. For a clean review, include **“The code is simple and follows the project rules.”** before the final Catlazy status.
