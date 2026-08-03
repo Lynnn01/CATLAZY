@@ -59,6 +59,22 @@ Then use the host’s file-writing capability to create `docs/plans/YYYY-MM-DD-<
 
 Wait for the user to read the artifact and press **Proceed/Approve** before writing any planned source changes.
 
+### Task Context for Follow-up Work
+
+For work that will be reviewed or fixed later, record a minimal task context in the plan artifact:
+
+```json
+{
+  "base": "origin/main",
+  "scope": "ui",
+  "files": ["src/features/example"],
+  "format": "normal",
+  "validationProfile": "ui"
+}
+```
+
+This context is optional. It may be saved as `.catlazy/task.json` only when the user wants the task to persist across messages. Otherwise, keep it in the approved plan and command arguments. Never infer that every dirty worktree file belongs to the active task.
+
 ## 🚫 Anti-Patterns
 
 - Do not offer more than three choices.

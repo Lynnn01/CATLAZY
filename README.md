@@ -77,6 +77,21 @@ The skills are ordered along a practical software-development lifecycle:
 
 You can type `/catlazy`, `/catlazy off`, or `/catlazy ultra` at any time to change the main operating mode.
 
+### Task-scoped reviews
+
+Use Catlazy reviews with an explicit task context when the worktree is dirty:
+
+```text
+/catlazy2-review report --scope ui --base origin/main --files src/features/screener
+/catlazy2-review fix-safe --scope ui --files src/features/screener --format normal
+```
+
+`report` only reports findings. `fix-safe` may repair small, local, low-risk findings in the selected files and then reviews them again. It never auto-changes migrations, dependencies, generated files, authentication, public contracts, or files outside scope.
+
+For a task that spans several messages, copy `.catlazy/task.json.example` to `.catlazy/task.json` and set its baseline, scope, files, report format, and validation profile. The manifest is optional; it exists to avoid treating every dirty worktree file as part of the current task.
+
+Validation profiles are selected from the task context after Catlazy discovers the project’s real scripts: `ui` runs relevant typecheck and lint, `backend` adds tests and build, `api` adds contract/type checks, and `full` runs all applicable checks. Catlazy reports missing scripts instead of guessing commands.
+
 ---
 
 ## 🔁 Incremental Decision Trail

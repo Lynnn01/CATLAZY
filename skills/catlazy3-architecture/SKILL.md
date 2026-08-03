@@ -24,6 +24,10 @@ Resolve `docs/architecture/` in this order before auditing:
 2. Otherwise, use the canonical `docs/architecture/` directory in the installed Catlazy bundle, beside its `skills/` directory.
 3. Do not fall back to generic Clean Architecture advice while the bundled standard is available.
 4. State whether project or bundled standards were used in the Inspection Summary.
+
+### Task Context
+
+Accept `--scope ui|backend|api|full`, `--base <commit-or-ref>`, and `--files <path,...>`. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved candidate files before a broad audit. For `ui` scope, mark backend-only architecture checks as not applicable unless the selected UI files cross a boundary.
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Follow this exact structure. Do not output conversational text before the `### 🔎 Inspection Summary` heading. Respond in the user’s language unless the user requests another language.

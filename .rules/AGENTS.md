@@ -43,3 +43,11 @@ Complete these checks before writing code:
 
 - Use concise progress updates for multi-step work and report evidence from verification.
 - Respond in the user’s language unless the user explicitly requests another language. English is the canonical language for repository rules, skills, and documentation.
+
+## 7. Task Scope and Safe Automation
+
+- Before a review, audit, formatter, or automatic fix, resolve the task scope from explicit arguments, an optional `.catlazy/task.json`, or user-named files. Show candidate files before broadening the scope.
+- Review mode is explicit: `report` does not edit; `fix-safe` may change only local, low-risk items within the approved scope and must re-review afterward.
+- Do not auto-fix data changes, auth, public contracts, dependencies, migrations, generated files, or unrelated dirty worktree files.
+- Use UTF-8 for text reads and writes. If encoding is uncertain or text is mojibake, stop and inspect the encoding before patching.
+- Run validation and formatting only for files in scope. Keep formatting-only changes separate from functional changes.

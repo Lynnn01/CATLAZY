@@ -22,6 +22,35 @@ Before reviewing, resolve Catlazy standards in this order:
 2. If any of those directories are absent, use the matching canonical directories in the installed Catlazy bundle: the `docs/` directory beside the bundle’s `skills/` directory.
 3. Do not replace a missing target-repository document with generic Clean Architecture or product principles when the bundled Catlazy document is available.
 4. State which source of standards was used in the Inspection Summary.
+
+### Task Context and Modes
+
+Resolve the task context before inspecting a diff. Accept these optional arguments:
+
+```text
+catlazy2-review [report|fix-safe] [--scope ui|backend|api|full]
+                [--base <commit-or-ref>] [--files <path,...>]
+                [--format normal|strict] [--language <code>]
+```
+
+Resolve values in this order: explicit arguments, optional `.catlazy/task.json`, files explicitly named by the user, then candidate changed files. If the final fallback contains unrelated dirty changes, show the candidate file list and ask for confirmation before reviewing.
+
+- `report` is the default and never edits files.
+- `fix-safe` may repair only local, low-risk findings inside the resolved scope, then reruns this review and the selected validation profile.
+- Never auto-fix data changes, authentication/authorization, public contracts, dependencies, migrations, generated files, or anything outside scope.
+- `normal` uses concise summary, findings, and fixes. `strict` uses the full checklist.
+- State the resolved mode, scope, baseline, file list, standards source, and output language before reporting findings.
+
+### Validation Profiles
+
+Resolve the profile from an explicit argument, the optional task manifest, then the selected scope. Discover actual project scripts before running anything; never guess commands.
+
+- `ui`: relevant typecheck and lint.
+- `backend`: relevant lint, tests, and build.
+- `api`: relevant lint, tests, and contract/type checks.
+- `full`: all applicable profiles for the resolved files.
+
+Run validation only after `fix-safe`, only against the resolved scope where the tool supports file targeting, and report unavailable commands rather than substituting unrelated checks.
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Do not output conversational text before the required headings. Respond in the user’s language unless another language is requested.

@@ -24,6 +24,10 @@ Resolve `docs/design/user_interface/` in this order before auditing:
 2. Otherwise, use the canonical `docs/design/user_interface/` directory in the installed Catlazy bundle, beside its `skills/` directory.
 3. Do not fall back to generic UI advice while the bundled standard is available.
 4. State whether project or bundled standards were used in the Inspection Summary.
+
+### Task Context
+
+Accept `--base <commit-or-ref>` and `--files <path,...>` to isolate the current task. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved files before inspection. Do not inspect unrelated dirty worktree files.
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
 Do not output conversational text before `### 🔎 Inspection Summary`. Respond in the user’s language unless another language is requested.

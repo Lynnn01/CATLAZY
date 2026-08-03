@@ -1,0 +1,9 @@
+{
+  "base": "origin/main",
+  "scope": "ui",
+  "files": [
+    "src/features/example"
+  ],
+  "format": "normal",
+  "validationProfile": "ui"
+}
