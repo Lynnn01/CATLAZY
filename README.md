@@ -74,6 +74,7 @@ The skills are ordered along a practical software-development lifecycle:
 | **7** | `/catlazy7-debt` | **Debt management:** collect small intentional technical-debt markers (`catlazy:`). |
 | **8** | `/catlazy8-agent` | **System care:** review and simplify the agent rules themselves. |
 | **9** | `/catlazy9-compress` | **Resource saving:** assess or configure optional Headroom compression. |
+| **10** | `/catlazy10-loop` | **Automation:** force continuous execution of a task until validated. |
 
 You can type `/catlazy`, `/catlazy off`, or `/catlazy ultra` at any time to change the main operating mode. `lite` reviews the final diff and states missing checks; `full` adds approved scope, current validation evidence, and a finish status; `ultra` adds hollow review and critical negative-path validation. Fault probes remain optional and must be approved and isolated from a live dirty worktree.
 
