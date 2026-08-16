@@ -18,6 +18,27 @@ Inspect the entire repository for dead code, duplication, unnecessary dependenci
 
 Accept `--base <commit-or-ref>` and `--files <path,...>`. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. A repository-wide read does not authorize repository-wide writes. If the user approves cleanup, treat the approved files as the write scope, stop before expanding it, validate after the last edit, review the final diff against the baseline, and apply the Catlazy Finish Contract. A read-only audit does not claim implementation completion.
 
-### 🚨 STRICT OUTPUT FORMAT
+### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
-Start with `### 🔎 Inspection Summary`, then show `### 📋 Audit Checklist` with `[PASS]`, `[FAIL]`, or `[N/A]` for dead code, duplication, dependencies, configuration, architecture, and risk. For every failure include file, evidence, impact, and the smallest safe action. Always show both sections and respond in the user’s language.
+Follow this exact structure. Do not output conversational text before the `### 🔎 Inspection Summary` heading. Respond in the user's language.
+
+### 🔎 Inspection Summary
+
+- Analyze the repository state with concise evidence.
+
+### 📋 Audit Checklist
+
+- `[PASS]` / `[FAIL]` / `[N/A]` Dead code
+- `[PASS]` / `[FAIL]` / `[N/A]` Duplication
+- `[PASS]` / `[FAIL]` / `[N/A]` Dependencies
+- `[PASS]` / `[FAIL]` / `[N/A]` Configuration
+- `[PASS]` / `[FAIL]` / `[N/A]` Architecture
+- `[PASS]` / `[FAIL]` / `[N/A]` Risk
+
+If any item is `[FAIL]`, list details:
+- **File:** `[file/path]`
+- **Evidence:** explain why it fails.
+- **Impact:** explain the negative impact.
+- **Action:** propose the smallest safe action.
+
+Even when everything is correct, always output both required sections.

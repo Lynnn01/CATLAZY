@@ -16,6 +16,19 @@ Review `.rules/AGENTS.md` and related project rules for duplication, contradicti
 
 For approved updates, show the rule files, treat them as the write scope, and stop before expanding it. Validate after the last edit, inspect the final diff against the task baseline, and apply the Catlazy Finish Contract. A report-only run keeps the rule-update format and does not claim implementation completion.
 
-### 🚨 STRICT OUTPUT FORMAT
+### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
-Start with `### 🔎 Inspection Summary`, then include `### 📋 Rule Update Report`. Cover duplication, contradictions, stale references, missing safeguards, and proposed changes. Always show both sections and respond in the user’s language.
+Follow this exact structure. Do not output conversational text before the `### 🔎 Inspection Summary` heading. Respond in the user's language.
+
+### 🔎 Inspection Summary
+
+- Analyze the rule files for duplication, contradictions, and stale instructions.
+
+### 📋 Rule Update Report
+
+- `[PASS]` / `[FAIL]` / `[N/A]` Duplication
+- `[PASS]` / `[FAIL]` / `[N/A]` Contradictions
+- `[PASS]` / `[FAIL]` / `[N/A]` Stale references
+- `[PASS]` / `[FAIL]` / `[N/A]` Missing safeguards
+
+If any item is `[FAIL]`, detail the proposed changes. Always show both sections.

@@ -15,6 +15,22 @@ Scan the repository for intentional `catlazy:` comments and maintain a concise d
 
 If the user approves ledger or marker edits, show the approved files, treat them as the write scope, and stop before expanding it. Validate after the last edit, inspect the final diff against the task baseline, and apply the Catlazy Finish Contract. A scan-only run keeps the debt-ledger format and does not claim implementation completion.
 
-### 🚨 STRICT OUTPUT FORMAT
+### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
-Start with `### 🔎 Inspection Summary`, then include `### 📋 Debt Ledger` with `[PASS]`, `[FAIL]`, or `[N/A]` status for the scan. Always show both sections, even when no debt markers exist. Respond in the user’s language.
+Follow this exact structure. Do not output conversational text before the `### 🔎 Inspection Summary` heading. Respond in the user's language.
+
+### 🔎 Inspection Summary
+
+- Analyze the relevant files for intentional debt markers.
+
+### 📋 Debt Ledger
+
+- `[PASS]` / `[FAIL]` / `[N/A]` Debt Scan
+
+If debt markers exist, report each one:
+- **File:** `[file/path:line]`
+- **Simplification:** `<simplification>`
+- **Ceiling:** `<current limit>`
+- **Upgrade:** `<trigger to revisit>`
+
+Always show both sections, even when no debt markers exist.
