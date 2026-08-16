@@ -28,9 +28,8 @@ The **Catlazy framework** counters that behavior with three principles:
 ## ✨ Key Features
 
 1. **🛡️ Automated guardrails:** control agent behavior through `.rules/AGENTS.md`.
-2. **🗜️ Context compression:** optionally use the **Headroom Proxy** to compress LLM API traffic that is configured to pass through it.
-3. **🔍 Focused audits:** inspect architecture, UI, UX, complexity, technical debt, and agent rules against focused standards.
-4. **🛣️ SDLC workflow:** use skills ordered from 0–9 to guide real development work.
+2. **🔍 Focused audits:** inspect architecture, UI, UX, complexity, technical debt, and agent rules against focused standards.
+3. **🛣️ SDLC workflow:** use skills ordered from 0–10 to guide real development work.
 
 ---
 
@@ -46,10 +45,9 @@ The project is intentionally small. Its important directories are:
 │   └── design/          # Unified UI/UX design guidance
 │       ├── user_experience/
 │       └── user_interface/
-├── skills/              # Eleven skills (the core skill plus 0–9)
+├── skills/              # Catlazy skills
 │   ├── catlazy/         # Configure the Catlazy intensity
-│   ├── catlazy0-help/   # Help and command reference
-│   └── catlazy9-compress/
+│   └── catlazy0-help/   # Help and command reference
 └── plugin.json          # Plugin configuration for the AI host
 ```
 
@@ -73,7 +71,6 @@ The skills are ordered along a practical software-development lifecycle:
 | **6** | `/catlazy6-audit` | **Repository audit:** find dead code, duplication, and candidates for deletion or consolidation. |
 | **7** | `/catlazy7-debt` | **Debt management:** collect small intentional technical-debt markers (`catlazy:`). |
 | **8** | `/catlazy8-agent` | **System care:** review and simplify the agent rules themselves. |
-| **9** | `/catlazy9-compress` | **Resource saving:** assess or configure optional Headroom compression. |
 | **10** | `/catlazy10-loop` | **Automation:** force continuous execution of a task until validated. |
 
 You can type `/catlazy`, `/catlazy off`, or `/catlazy ultra` at any time to change the main operating mode. `lite` reviews the final diff and states missing checks; `full` adds approved scope, current validation evidence, and a finish status; `ultra` adds hollow review and critical negative-path validation. Fault probes remain optional and must be approved and isolated from a live dirty worktree.
@@ -129,26 +126,13 @@ Small, clear work uses only **Plan → Apply → Verify** so the process does no
 
 Use an AI agent framework such as Antigravity that supports a plugin or skills directory.
 
-### 2. Optional Headroom Proxy
+### 2. Environment Variables
 
-Install Docker only if you choose to use this proxy. It compresses only LLM API traffic configured to route through it:
-
-```bash
-# Port 8787 accepts requests from your configured client.
-docker run -p 8787:8787 ghcr.io/chopratejas/headroom
-```
-
-On Windows, you can double-click the included `run-headroom.bat`.
-
-### 3. Environment Variables
-
-If you choose the proxy, copy `.env.example` to `.env` and provide your API keys:
+Copy `.env.example` to `.env` and provide your API keys:
 
 ```bash
 cp .env.example .env
 ```
-
-The example routes `OPENAI_BASE_URL` or `ANTHROPIC_BASE_URL` to `http://localhost:8787`. Only clients configured with those variables send traffic through the proxy; no application code needs to change.
 
 ---
 

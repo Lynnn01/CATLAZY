@@ -34,7 +34,6 @@ Display the one-shot quick reference for `catlazy`.
 - **`/catlazy6-audit`:** audit the repository for over-engineering, with emphasis on reducing unnecessary code.
 - **`/catlazy7-debt`:** collect `catlazy:` comments into the debt ledger.
 - **`/catlazy8-agent`:** review and update project rules into a simpler, consistent structure.
-- **`/catlazy9-compress`:** compress large logs or JSON before processing when that is useful for token efficiency.
 - **`/catlazy10-loop`:** force the agent to continuously execute a task until validated multiple times without findings.
 
 ### ⚙️ Stop and Configure

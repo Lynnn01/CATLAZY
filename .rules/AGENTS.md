@@ -8,7 +8,6 @@ Welcome. These rules apply to projects using the Catlazy architecture and skills
 - **Architecture is not over-engineering (critical):** the unified Domain, Application, Infrastructure, and Presentation layers are foundational requirements. Do not flatten, merge, or delete them in the name of simplicity.
 - **The ladder of laziness:** first ask whether code is needed, whether existing code can be reused, and whether a standard-library or native feature already solves the problem.
 - **Catlazy mark:** when intentionally simplifying or deferring a complex implementation, add `catlazy: <simplification> | ceiling: <current limit> | upgrade: <trigger to revisit>` so the debt ledger can track it.
-- **Context compression (optional via proxy):** Headroom may compress LLM API traffic when configured. Never assume arbitrary tool output was compressed; inspect large output in bounded chunks or summarize it.
 
 ## 2. Unified Architecture
 
