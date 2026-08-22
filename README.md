@@ -55,7 +55,7 @@ After updating the plugin, reload or reinstall it using your AI host’s process
 
 ---
 
-## 🛠️ Catlazy Skills Workflow (Commands 0–9)
+## 🛠️ Catlazy Skills Workflow (Commands 0–10)
 
 The skills are ordered along a practical software-development lifecycle:
 

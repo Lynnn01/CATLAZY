@@ -27,9 +27,15 @@ Resolve `docs/architecture/` in this order before auditing:
 
 ### Task Context
 
-Accept `--scope ui|backend|api|full`, `--base <commit-or-ref>`, and `--files <path,...>`. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved candidate files before a broad audit. For `ui` scope, mark backend-only architecture checks as not applicable unless the selected UI files cross a boundary.
+Accept standardized input arguments:
+```text
+catlazy3-architecture [report|fix-safe] [--scope ui|backend|api|docs|full]
+                      [--base <commit-or-ref>] [--files <path,...>]
+                      [--format normal|strict] [--language <code>]
+```
+Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved candidate files before a broad audit. For `ui` scope, mark backend-only architecture checks as not applicable unless the selected UI files cross a boundary.
 
-If the user approves fixes, treat the approved `files` as the write scope, stop before expanding it, and compare the final task diff with `base`. Run affected validation after the last edit and apply the Catlazy Finish Contract from the target or bundled `.rules/AGENTS.md`. A read-only audit keeps the audit format and does not claim implementation completion.
+If the user approves fixes, treat the approved `files` as the write scope, stop before expanding it, and compare the final task diff with `base`. Run affected validation after the last edit and apply the Catlazy Finish Contract from the target or bundled `.rules/AGENTS.md`.
 
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
@@ -37,10 +43,11 @@ Follow this exact structure. Do not output conversational text before the `### �
 
 ### 🔎 Inspection Summary
 
-- Analyze the relevant files and architecture with concise evidence.
-- Check `[arch-leak]`, `[arch-bypass]`, `[arch-anemic]`, and `[arch-coupling]`.
+- **Target / Scope:** resolved mode, scope, baseline, and files.
+- **Standards Source:** state whether target repository (`docs/architecture/`) or bundled fallback standards were used.
+- **Observation:** concise architectural analysis and evidence across `[arch-leak]`, `[arch-bypass]`, `[arch-anemic]`, and `[arch-coupling]`.
 
-### 📋 Audit Checklist
+### 📋 Inspection Checklist
 
 - `[PASS]` / `[FAIL]` / `[N/A]` `[arch-leak]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[arch-bypass]` ...
@@ -48,11 +55,15 @@ Follow this exact structure. Do not output conversational text before the `### �
 - `[PASS]` / `[FAIL]` / `[N/A]` `[arch-coupling]` ...
 
 If any item is `[FAIL]`, list details:
+- **Target:** `[file:line]` or `[component/layer]`
+- **Tag & Rule:** `[arch-*]` (citing the relevant architectural principle)
+- **Evidence:** explain the architectural violation and cite the relevant rule
+- **Smallest Fix:** propose the smallest Clean Architecture remediation
 
-- **[Tag] `[file/path]`**
-  - **Reason:** explain the architectural violation and cite the relevant rule.
-  - **Recommendation:** propose the smallest Clean Architecture fix.
+### 🐈 Catlazy Finish Check
 
-Even when everything is correct, always output both required sections. Early returns are forbidden.
-
-If everything passes, end with: **“Clean Architecture. The code follows `docs/architecture/` correctly.”**
+- **Scope & Safety:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Validation & Freshness:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Diff & Side-effects:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Verdict:** If everything passes, output **“Clean Architecture. The code follows `docs/architecture/` correctly.”**
+- **Status:** Conclude with exactly one status: `CATLAZY_DONE`, `CATLAZY_BLOCKED: <reason>`, or `CATLAZY_UNVERIFIED: <missing check>`.

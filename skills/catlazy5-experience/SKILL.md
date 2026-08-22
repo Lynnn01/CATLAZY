@@ -26,9 +26,15 @@ Resolve `docs/design/user_experience/` in this order before auditing:
 
 ### Task Context
 
-Accept `--base <commit-or-ref>` and `--files <path,...>` to isolate the current task. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved files before inspection. Do not inspect unrelated dirty worktree files.
+Accept standardized input arguments:
+```text
+catlazy5-experience [report|fix-safe] [--scope ui|backend|api|docs|full]
+                   [--base <commit-or-ref>] [--files <path,...>]
+                   [--format normal|strict] [--language <code>]
+```
+Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved files before inspection. Do not inspect unrelated dirty worktree files.
 
-If the user approves fixes, treat the approved `files` as the write scope, stop before expanding it, and compare the final task diff with `base`. Run affected validation after the last edit and apply the Catlazy Finish Contract from the target or bundled `.rules/AGENTS.md`. A read-only audit keeps the audit format and does not claim implementation completion.
+If the user approves fixes, treat the approved `files` as the write scope, stop before expanding it, and compare the final task diff with `base`. Run affected validation after the last edit and apply the Catlazy Finish Contract from the target or bundled `.rules/AGENTS.md`.
 
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
@@ -36,16 +42,27 @@ Do not output conversational text before `### 🔎 Inspection Summary`. Respond 
 
 ### 🔎 Inspection Summary
 
-- Analyze the UX flow with concise file and state evidence.
-- Check `[ux-clutter]`, `[ux-silent]`, `[ux-empty]`, and `[ux-inconsistent]`.
+- **Target / Scope:** resolved mode, scope, baseline, and files.
+- **Standards Source:** state whether target repository (`docs/design/user_experience/`) or bundled fallback standards were used.
+- **Observation:** concise UX flow analysis with file and state evidence across `[ux-clutter]`, `[ux-silent]`, `[ux-empty]`, and `[ux-inconsistent]`.
 
-### 📋 Audit Checklist
+### 📋 Inspection Checklist
 
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ux-clutter]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ux-silent]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ux-empty]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ux-inconsistent]` ...
 
-For each failure, include the file, reason, violated rule, and the smallest UX recommendation, such as a skeleton, empty state, or retry path. Always output both required sections, even when the UX is perfect.
+If any item is `[FAIL]`, list details:
+- **Target:** `[file:line]`
+- **Tag & Rule:** `[ux-*]` (citing the relevant user experience guideline)
+- **Evidence:** reason and observed interaction failure
+- **Smallest Fix:** smallest recommended UX action (e.g. skeleton, empty state, or retry path)
 
-If everything passes, end with: **“Seamless Experience. The UX follows `docs/design/user_experience/`.”**
+### 🐈 Catlazy Finish Check
+
+- **Scope & Safety:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Validation & Freshness:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Diff & Side-effects:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Verdict:** If everything passes, output **“Seamless Experience. The UX follows `docs/design/user_experience/`.”**
+- **Status:** Conclude with exactly one status: `CATLAZY_DONE`, `CATLAZY_BLOCKED: <reason>`, or `CATLAZY_UNVERIFIED: <missing check>`.

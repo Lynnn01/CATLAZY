@@ -27,9 +27,15 @@ Resolve `docs/design/user_interface/` in this order before auditing:
 
 ### Task Context
 
-Accept `--base <commit-or-ref>` and `--files <path,...>` to isolate the current task. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved files before inspection. Do not inspect unrelated dirty worktree files.
+Accept standardized input arguments:
+```text
+catlazy4-interface [report|fix-safe] [--scope ui|backend|api|docs|full]
+                   [--base <commit-or-ref>] [--files <path,...>]
+                   [--format normal|strict] [--language <code>]
+```
+Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. Show the resolved files before inspection. Do not inspect unrelated dirty worktree files.
 
-If the user approves fixes, treat the approved `files` as the write scope, stop before expanding it, and compare the final task diff with `base`. Run affected validation after the last edit and apply the Catlazy Finish Contract from the target or bundled `.rules/AGENTS.md`. A read-only audit keeps the audit format and does not claim implementation completion.
+If the user approves fixes, treat the approved `files` as the write scope, stop before expanding it, and compare the final task diff with `base`. Run affected validation after the last edit and apply the Catlazy Finish Contract from the target or bundled `.rules/AGENTS.md`.
 
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
@@ -37,10 +43,11 @@ Do not output conversational text before `### 🔎 Inspection Summary`. Respond 
 
 ### 🔎 Inspection Summary
 
-- Analyze the UI components with file-based evidence.
-- Check `[ui-color]`, `[ui-layout]`, `[ui-a11y]`, `[ui-motion]`, and `[ui-spacing]`.
+- **Target / Scope:** resolved mode, scope, baseline, and files.
+- **Standards Source:** state whether target repository (`docs/design/user_interface/`) or bundled fallback standards were used.
+- **Observation:** concise UI analysis with file-based evidence across `[ui-color]`, `[ui-layout]`, `[ui-a11y]`, `[ui-motion]`, and `[ui-spacing]`.
 
-### 📋 Audit Checklist
+### 📋 Inspection Checklist
 
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ui-color]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ui-layout]` ...
@@ -48,6 +55,16 @@ Do not output conversational text before `### 🔎 Inspection Summary`. Respond 
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ui-motion]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[ui-spacing]` ...
 
-For each failure, include the file, reason, violated rule, and the smallest recommended style or component fix. Always output both required sections, even when the UI is perfect.
+If any item is `[FAIL]`, list details:
+- **Target:** `[file:line]`
+- **Tag & Rule:** `[ui-*]` (citing the relevant design-token or layout rule)
+- **Evidence:** reason and observed styling violation
+- **Smallest Fix:** smallest recommended style or component fix
 
-If everything passes, end with: **“Premium UI. The interface follows `docs/design/user_interface/`.”**
+### 🐈 Catlazy Finish Check
+
+- **Scope & Safety:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Validation & Freshness:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Diff & Side-effects:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Verdict:** If everything passes, output **“Premium UI. The interface follows `docs/design/user_interface/`.”**
+- **Status:** Conclude with exactly one status: `CATLAZY_DONE`, `CATLAZY_BLOCKED: <reason>`, or `CATLAZY_UNVERIFIED: <missing check>`.

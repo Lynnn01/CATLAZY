@@ -45,8 +45,15 @@ Complete these checks before writing code:
 - Use concise progress updates for multi-step work and report evidence from verification.
 - Respond in the user’s language unless the user explicitly requests another language. English is the canonical language for repository rules, skills, and documentation.
 
-## 7. Task Scope and Safe Automation
+## 7. Standard Input Contract and Task Scope
 
+- All Catlazy skills accept a standardized input argument contract:
+  ```text
+  catlazy<N>-<skill> [report|fix-safe] [--scope ui|backend|api|docs|full]
+                     [--base <commit-or-ref>] [--files <path,...>]
+                     [--format normal|strict] [--language <code>]
+  ```
+- Resolve input values in strict precedence order: explicit command arguments > optional `.catlazy/task.json` manifest > user-named files > candidate changed files.
 - Before writing, reviewing, auditing, formatting, or automatically fixing, resolve the task scope from explicit arguments, an optional `.catlazy/task.json`, or user-named files. Show the approved file list before the first implementation edit.
 - After the user approves the task, treat `files` as the approved write scope. Reading outside that scope is allowed for discovery; writing outside it is not. If implementation requires another path, stop before writing it, explain why, and obtain approval to expand the scope.
 - Compare the final task diff with the recorded baseline and approved files. Do not attribute pre-existing or unrelated dirty files to the task.
@@ -65,3 +72,28 @@ Complete these checks before writing code:
 - Report every expected validation as `PASS`, `FAIL`, or `N/A`. Every `N/A` must name the concrete reason, such as no applicable files or a project script that mutates files outside the approved scope.
 - **Last-edit rule (critical):** validation is current only when it ran after the last relevant edit in its scope. After a later edit, rerun only the affected validation profile before reporting `CATLAZY_DONE`.
 - These rules and skills are workflow guardrails, not filesystem enforcement. If the host cannot enforce an edit boundary, state that limitation and verify the final diff against the approved scope.
+
+## 9. Standardized Skill Output Contract (Universal 3-Section Format)
+
+All Catlazy skills, reviews, audits, and reports MUST output using the exact 3-section structure without conversational filler before the first heading:
+
+### 1. `### 🔎 Inspection Summary`
+- **Target / Scope:** resolved mode, scope, baseline, and files.
+- **Standards Source:** state whether target repository (`docs/`) or bundled fallback standards were used.
+- **Observation:** concise evidence and key findings summary.
+
+### 2. `### 📋 Inspection Checklist`
+- Report all items using standardized status badges: `[PASS]`, `[FAIL]`, or `[N/A]`. Every `[N/A]` must state the concrete reason.
+- For any failure or finding, format details using the unified finding structure:
+  - **Target:** `[file:line]` or `[component/layer]`
+  - **Tag & Rule:** `[tag-name]` citing the violated guideline
+  - **Evidence:** observed code or behavior evidence
+  - **Smallest Fix:** smallest non-overengineered remediation
+
+### 3. `### 🐈 Catlazy Finish Check`
+- Report `[PASS]`, `[FAIL]`, or `[N/A]` for:
+  - `Scope & Safety`
+  - `Validation & Freshness`
+  - `Diff & Side-effects`
+- **Verdict:** concise one-line verdict statement.
+- **Terminal Status:** conclude with exactly one status: `CATLAZY_DONE`, `CATLAZY_BLOCKED: <reason>`, or `CATLAZY_UNVERIFIED: <missing check>`.

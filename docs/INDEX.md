@@ -8,8 +8,15 @@ Folder: `architecture/`
 
 These guides combine Clean Architecture and Domain-Driven Design (DDD) to keep code resilient to change and maintainable.
 
-- Start with [Architecture Overview](./architecture/01-architecture-overview.md).
-- Apply [Cross-Cutting Concerns](./architecture/07-cross-cutting-concerns.md) for security, reliability, and observability across layers.
+| File | Main coverage |
+|---|---|
+| [01-architecture-overview.md](./architecture/01-architecture-overview.md) | Clean Architecture & DDD foundations, Dependency Rule, 4 layers |
+| [02-domain-layer.md](./architecture/02-domain-layer.md) | Entities, Value Objects, Aggregates, Domain Events, Invariants |
+| [03-application-layer.md](./architecture/03-application-layer.md) | Use cases, Commands, Queries, Ports, Transaction Boundaries |
+| [04-infrastructure-layer.md](./architecture/04-infrastructure-layer.md) | Persistence, Adapters, External APIs, Concrete Clients |
+| [05-presentation-interface-layer.md](./architecture/05-presentation-interface-layer.md) | HTTP Controllers, Resolvers, DTOs, Serialization |
+| [06-best-practices.md](./architecture/06-best-practices.md) | Dependency Injection, Composition Roots, Testing Strategies |
+| [07-cross-cutting-concerns.md](./architecture/07-cross-cutting-concerns.md) | Security, Reliability, Observability, Cross-layer Concerns |
 
 ## 🎨 2. Design
 

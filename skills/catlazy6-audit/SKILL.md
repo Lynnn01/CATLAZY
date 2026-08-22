@@ -16,7 +16,13 @@ Inspect the entire repository for dead code, duplication, unnecessary dependenci
 
 ### Task Context and Approved Changes
 
-Accept `--base <commit-or-ref>` and `--files <path,...>`. Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. A repository-wide read does not authorize repository-wide writes. If the user approves cleanup, treat the approved files as the write scope, stop before expanding it, validate after the last edit, review the final diff against the baseline, and apply the Catlazy Finish Contract. A read-only audit does not claim implementation completion.
+Accept standardized input arguments:
+```text
+catlazy6-audit [report|fix-safe] [--scope ui|backend|api|docs|full]
+               [--base <commit-or-ref>] [--files <path,...>]
+               [--format normal|strict] [--language <code>]
+```
+Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. A repository-wide read does not authorize repository-wide writes. If the user approves cleanup, treat the approved files as the write scope, stop before expanding it, validate after the last edit, review the final diff against the baseline, and apply the Catlazy Finish Contract.
 
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
@@ -24,21 +30,29 @@ Follow this exact structure. Do not output conversational text before the `### �
 
 ### 🔎 Inspection Summary
 
-- Analyze the repository state with concise evidence.
+- **Target / Scope:** resolved mode, scope, baseline, and files.
+- **Standards Source:** state whether target repository (`docs/`) or bundled fallback standards were used.
+- **Observation:** concise repository analysis and over-engineering audit evidence.
 
-### 📋 Audit Checklist
+### 📋 Inspection Checklist
 
-- `[PASS]` / `[FAIL]` / `[N/A]` Dead code
-- `[PASS]` / `[FAIL]` / `[N/A]` Duplication
-- `[PASS]` / `[FAIL]` / `[N/A]` Dependencies
-- `[PASS]` / `[FAIL]` / `[N/A]` Configuration
-- `[PASS]` / `[FAIL]` / `[N/A]` Architecture
-- `[PASS]` / `[FAIL]` / `[N/A]` Risk
+- `[PASS]` / `[FAIL]` / `[N/A]` `[audit-deadcode]` (Dead code)
+- `[PASS]` / `[FAIL]` / `[N/A]` `[audit-duplication]` (Duplication)
+- `[PASS]` / `[FAIL]` / `[N/A]` `[audit-deps]` (Unnecessary dependencies)
+- `[PASS]` / `[FAIL]` / `[N/A]` `[audit-config]` (Stale configuration)
+- `[PASS]` / `[FAIL]` / `[N/A]` `[audit-arch]` (Over-engineered abstractions)
+- `[PASS]` / `[FAIL]` / `[N/A]` `[audit-risk]` (Complexity risk)
 
 If any item is `[FAIL]`, list details:
-- **File:** `[file/path]`
-- **Evidence:** explain why it fails.
-- **Impact:** explain the negative impact.
-- **Action:** propose the smallest safe action.
+- **Target:** `[file:line]` or `[component/layer]`
+- **Tag & Rule:** `[audit-*]` (citing over-engineering rule)
+- **Evidence:** explain why it fails and provide evidence
+- **Smallest Fix:** propose the smallest safe deletion or consolidation action
 
-Even when everything is correct, always output both required sections.
+### 🐈 Catlazy Finish Check
+
+- **Scope & Safety:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Validation & Freshness:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Diff & Side-effects:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Verdict:** If everything passes, output **“Repository is lean. No over-engineering detected.”**
+- **Status:** Conclude with exactly one status: `CATLAZY_DONE`, `CATLAZY_BLOCKED: <reason>`, or `CATLAZY_UNVERIFIED: <missing check>`.

@@ -13,7 +13,15 @@ Scan the repository for intentional `catlazy:` comments and maintain a concise d
 3. Report file, line, simplification, current ceiling, and upgrade trigger.
 4. Do not edit production code while collecting debt. Ask for approval before changing or removing a marker.
 
-If the user approves ledger or marker edits, show the approved files, treat them as the write scope, and stop before expanding it. Validate after the last edit, inspect the final diff against the task baseline, and apply the Catlazy Finish Contract. A scan-only run keeps the debt-ledger format and does not claim implementation completion.
+### Task Context and Approved Changes
+
+Accept standardized input arguments:
+```text
+catlazy7-debt [report|fix-safe] [--scope ui|backend|api|docs|full]
+              [--base <commit-or-ref>] [--files <path,...>]
+              [--format normal|strict] [--language <code>]
+```
+Resolve explicit arguments first, then optional `.catlazy/task.json`, then user-named files. If the user approves ledger or marker edits, show the approved files, treat them as the write scope, and stop before expanding it. Validate after the last edit, inspect the final diff against the task baseline, and apply the Catlazy Finish Contract.
 
 ### 🚨 STRICT OUTPUT FORMAT (CRITICAL)
 
@@ -21,16 +29,25 @@ Follow this exact structure. Do not output conversational text before the `### �
 
 ### 🔎 Inspection Summary
 
-- Analyze the relevant files for intentional debt markers.
+- **Target / Scope:** resolved mode, scope, baseline, and files.
+- **Standards Source:** state whether target repository (`docs/`) or bundled fallback standards were used.
+- **Observation:** concise summary of debt marker scan.
 
-### 📋 Debt Ledger
+### 📋 Inspection Checklist
 
-- `[PASS]` / `[FAIL]` / `[N/A]` Debt Scan
+- `[PASS]` / `[FAIL]` / `[N/A]` `[debt-scan]` (Scan for `catlazy:` markers)
 
 If debt markers exist, report each one:
-- **File:** `[file/path:line]`
+- **Target:** `[file:line]`
+- **Tag & Rule:** `[catlazy-marker]`
 - **Simplification:** `<simplification>`
 - **Ceiling:** `<current limit>`
 - **Upgrade:** `<trigger to revisit>`
 
-Always show both sections, even when no debt markers exist.
+### 🐈 Catlazy Finish Check
+
+- **Scope & Safety:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Validation & Freshness:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Diff & Side-effects:** `[PASS]` / `[FAIL]` / `[N/A]`
+- **Verdict:** If everything passes, output **“Debt ledger is up to date.”**
+- **Status:** Conclude with exactly one status: `CATLAZY_DONE`, `CATLAZY_BLOCKED: <reason>`, or `CATLAZY_UNVERIFIED: <missing check>`.
