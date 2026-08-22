@@ -8,6 +8,7 @@ Welcome. These rules apply to projects using the Catlazy architecture and skills
 - **Architecture is not over-engineering (critical):** the unified Domain, Application, Infrastructure, and Presentation layers are foundational requirements. Do not flatten, merge, or delete them in the name of simplicity.
 - **The ladder of laziness:** first ask whether code is needed, whether existing code can be reused, and whether a standard-library or native feature already solves the problem.
 - **Catlazy mark:** when intentionally simplifying or deferring a complex implementation, add `catlazy: <simplification> | ceiling: <current limit> | upgrade: <trigger to revisit>` so the debt ledger can track it.
+- **Cross-platform persistence:** Catlazy rules are universal across AI assistants (Antigravity, Claude, Codex, Cursor, Windsurf, Copilot). Use `/catlazy --embed` to persist the standard rule snippet into host-specific configuration files.
 
 ## 2. Unified Architecture
 
