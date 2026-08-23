@@ -17,6 +17,7 @@ These guides combine Clean Architecture and Domain-Driven Design (DDD) to keep c
 | [05-presentation-interface-layer.md](./architecture/05-presentation-interface-layer.md) | HTTP Controllers, Resolvers, DTOs, Serialization |
 | [06-best-practices.md](./architecture/06-best-practices.md) | Dependency Injection, Composition Roots, Testing Strategies |
 | [07-cross-cutting-concerns.md](./architecture/07-cross-cutting-concerns.md) | Security, Reliability, Observability, Cross-layer Concerns |
+| [08-shared-and-reusable-modules.md](./architecture/08-shared-and-reusable-modules.md) | Reusable-First, Central Shared Folders, Layer Hierarchy, Decoupling |
 
 ## 🎨 2. Design
 

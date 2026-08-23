@@ -70,7 +70,7 @@ catlazy [lite|full|ultra|off] [--embed global|project|all] [--unembed]
 - **[lite]:** complete the request normally, review the final diff, state any verification that was not run, and include a one-line “lazier alternative”.
 - **[full] (default):** apply the **Ladder of Laziness (7 steps)** before writing code:
   1. *YAGNI:* Is this code truly needed? If not, skip it.
-  2. *Reuse:* Does the codebase already provide this function? Call it instead of rewriting it.
+  2. *Reuse:* Does the codebase already provide this function? Call it instead of rewriting it. When creating new files, extract multi-caller logic into central shared folders immediately (Reusable-First).
   3. *Stdlib:* Can the standard library solve it? Use it.
   4. *Native:* Does the platform already provide this capability? Use it.
   5. *Dependency:* Is a suitable dependency already installed? Reuse it.

@@ -7,13 +7,15 @@ Welcome. These rules apply to projects using the Catlazy architecture and skills
 - **Simplicity first:** avoid over-engineering and write only the code required for the current problem.
 - **Architecture is not over-engineering (critical):** the unified Domain, Application, Infrastructure, and Presentation layers are foundational requirements. Do not flatten, merge, or delete them in the name of simplicity.
 - **The ladder of laziness:** first ask whether code is needed, whether existing code can be reused, and whether a standard-library or native feature already solves the problem.
+- **Reusable-first policy (critical):** when creating new files or features, extract helper functions, pure calculations, formatters, and common invariants into layer-aligned central shared folders (`shared/utils/`, `shared/domain/`, etc.) instead of writing inline duplicates.
 - **Catlazy mark:** when intentionally simplifying or deferring a complex implementation, add `catlazy: <simplification> | ceiling: <current limit> | upgrade: <trigger to revisit>` so the debt ledger can track it.
 - **Cross-platform persistence:** Catlazy rules are universal across AI assistants (Antigravity, Claude, Codex, Cursor, Windsurf, Copilot). Use `/catlazy --embed` to persist the standard rule snippet into host-specific configuration files.
 
 ## 2. Unified Architecture
 
-- Follow the principles in `docs/architecture/`.
+- Follow the principles in `docs/architecture/` (including `08-shared-and-reusable-modules.md`).
 - Keep strict boundaries between Domain, Application, Infrastructure, and Presentation. Catlazy agents must not delete these layers.
+- Shared modules (`shared/` or `core/`) must follow layer separation and NEVER import feature-specific code.
 - Framework-specific code must not leak into the Domain layer.
 
 ## 3. Design Systems (Strict UI/UX Compliance)
@@ -34,6 +36,7 @@ Welcome. These rules apply to projects using the Catlazy architecture and skills
 
 Complete these checks before writing code:
 
+- **Reusability check:** before creating a new helper or utility, search existing `shared/` folders for reusable implementations. If new logic will be needed by multiple callers, place it in `shared/` rather than inlining it in a local feature file.
 - **Blast-radius check:** before renaming or deleting a variable or function, search the repository for all usages. Never delete until remaining references are understood.
 - **Component-contract check:** before using a custom component such as `<Modal>`, `<Button>`, or `<Card>`, inspect its real props and API. Never guess prop names.
 - **Design-consistency check:** before adding a UI element, inspect how the same element is used elsewhere. Never invent a new icon, color, spacing, or animation without checking existing patterns.

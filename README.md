@@ -41,7 +41,7 @@ The project is intentionally small. Its important directories are:
 ├── .rules/              # Agent rules
 │   └── AGENTS.md        # Operating instructions for the AI
 ├── docs/                # Architecture and design standards
-│   ├── architecture/    # Clean Architecture and DDD guidance
+│   ├── architecture/    # Clean Architecture, DDD, and Reusable-First Shared Modules
 │   └── design/          # Unified UI/UX design guidance
 │       ├── user_experience/
 │       └── user_interface/

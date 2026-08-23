@@ -18,8 +18,8 @@ Use this skill before every type of work, including frontend, backend, UI/UX, an
 Quickly inspect the project:
 
 - Read `AGENTS.md` and relevant `.rules/` files.
-- Check the applicable layers in `docs/architecture/` and `docs/design/`.
-- Inspect the likely files to understand boundaries, existing APIs, and reuse opportunities.
+- Check the applicable layers in `docs/architecture/` (including `08-shared-and-reusable-modules.md`) and `docs/design/`.
+- Inspect existing `shared/` utilities, domain models, and likely files to identify reuse opportunities and avoid duplicating existing functions.
 
 **Catlazy rules:**
 
@@ -47,12 +47,12 @@ For complex or unclear requirements, interview the user one decision at a time:
 
 ### Step 3 — Lazy Gate ✋ (Implementation Plan Artifact)
 
-Before creating the plan, silently complete all four Lazy Verification checks in Section 5 of `AGENTS.md`—including repository-wide reference search and inspection of real component APIs.
+Before creating the plan, silently complete all Lazy Verification checks in Section 5 of `AGENTS.md`—including repository-wide reference search, reusability check in `shared/`, and inspection of real component APIs.
 
 Then use the host’s file-writing capability to create `docs/plans/YYYY-MM-DD-<topic>.md`. Do not write a long plan in chat. The artifact must include:
 
 1. **Goal:** a concise statement of the change.
-2. **Affected files and layers:** every file to create, edit, or delete.
+2. **Affected files and layers:** every file to create, edit, or delete, including central shared folders (`shared/utils/`, etc.) for any logic intended for multi-caller reuse.
 3. **Core code snippets:** the most important actual snippets or diffs that will be implemented, so the user can see the intended code or UI.
 4. **Verification status:** a short confirmation that Lazy Verification passed.
 5. **Decision trail (when needed):** concise Observation, Decision, Planned Action, and Verification; small tasks may use only Planned Action and Verification.

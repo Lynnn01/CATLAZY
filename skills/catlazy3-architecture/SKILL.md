@@ -15,6 +15,8 @@ When invoked with `/catlazy3-architecture`, inspect the entire repository and co
    - `[arch-bypass]`: Presentation calls infrastructure or a database directly instead of going through the Application layer.
    - `[arch-anemic]`: a Domain entity has only getters/setters and no meaningful business behavior.
    - `[arch-coupling]`: modules are too tightly coupled and should communicate through ports or explicit contracts.
+   - `[arch-unshared]`: general utility or reusable domain/application logic is inlined in a local feature rather than central `shared/` folders.
+   - `[arch-shared-leak]`: code in a central `shared/` directory imports feature-specific modules.
 
 ### Standards Resolution
 
@@ -45,7 +47,7 @@ Follow this exact structure. Do not output conversational text before the `### ð
 
 - **Target / Scope:** resolved mode, scope, baseline, and files.
 - **Standards Source:** state whether target repository (`docs/architecture/`) or bundled fallback standards were used.
-- **Observation:** concise architectural analysis and evidence across `[arch-leak]`, `[arch-bypass]`, `[arch-anemic]`, and `[arch-coupling]`.
+- **Observation:** concise architectural analysis and evidence across `[arch-leak]`, `[arch-bypass]`, `[arch-anemic]`, `[arch-coupling]`, `[arch-unshared]`, and `[arch-shared-leak]`.
 
 ### ðŸ“‹ Inspection Checklist
 
@@ -53,6 +55,8 @@ Follow this exact structure. Do not output conversational text before the `### ð
 - `[PASS]` / `[FAIL]` / `[N/A]` `[arch-bypass]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[arch-anemic]` ...
 - `[PASS]` / `[FAIL]` / `[N/A]` `[arch-coupling]` ...
+- `[PASS]` / `[FAIL]` / `[N/A]` `[arch-unshared]` ...
+- `[PASS]` / `[FAIL]` / `[N/A]` `[arch-shared-leak]` ...
 
 If any item is `[FAIL]`, list details:
 - **Target:** `[file:line]` or `[component/layer]`

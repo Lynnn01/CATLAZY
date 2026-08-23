@@ -11,8 +11,8 @@ When invoked, review only the latest changes (`git diff` or uncommitted changes)
 1. Confirm the change is limited to the requested behavior and does not introduce over-engineering.
 2. For UI code, check accessibility contrast, accessible names, focus, touch targets, semantic tokens, responsive layout, and reduced motion.
 3. For UX, check progressive disclosure, loading/error/empty feedback, recovery, and consistent terminology.
-4. Perform lazy verification: search references before deletions, inspect custom component contracts, reuse existing styles, check i18n before hard-coded user text, and verify auth/RLS filters before data access.
-5. Check security, data-loss handling, and layer boundaries.
+4. Perform lazy verification: search references before deletions, check reusability and extract multi-caller logic into `shared/` folders, inspect custom component contracts, reuse existing styles, check i18n before hard-coded user text, and verify auth/RLS filters before data access.
+5. Check security, data-loss handling, and layer boundaries (including zero inward leakage from `shared/`).
 
 ### Standards Resolution
 

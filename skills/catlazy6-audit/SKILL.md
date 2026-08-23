@@ -12,7 +12,7 @@ Inspect the entire repository for dead code, duplication, unnecessary dependenci
 2. Search all references before recommending deletion or renaming.
 3. Do not edit immediately; present findings and wait for approval.
 4. Never recommend deleting security, accessibility, data-loss handling, tests, or required architecture layers merely to reduce line count.
-5. Classify findings as deletion, consolidation, reuse, dependency removal, or intentional complexity.
+5. Classify findings as deletion, consolidation into central `shared/` modules, reuse, dependency removal, or intentional complexity.
 
 ### Task Context and Approved Changes
 

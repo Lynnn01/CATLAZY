@@ -28,7 +28,7 @@ Display the one-shot quick reference for `catlazy`.
 - **`/catlazy0-help`:** display this guide.
 - **`/catlazy1-design`:** brainstorm before writing code for any work, including UI, UX, and bug fixes.
 - **`/catlazy2-review`:** review the latest changes for over-engineering and rule violations.
-- **`/catlazy3-architecture`:** check the code against Clean Architecture guidance in `docs/architecture/`.
+- **`/catlazy3-architecture`:** check the code against Clean Architecture and Reusable-First guidance in `docs/architecture/`.
 - **`/catlazy4-interface`:** check UI against the design-token rules in `docs/design/user_interface/`.
 - **`/catlazy5-experience`:** check UX usability and clarity of feedback using `docs/design/user_experience/`.
 - **`/catlazy6-audit`:** audit the repository for over-engineering, with emphasis on reducing unnecessary code.

@@ -38,6 +38,8 @@ Use the smallest architecture that protects a real boundary. A simple feature ca
 - Infrastructure and Presentation are replaceable outer details. Their code may depend on inner contracts, never the reverse.
 - A boundary is useful only when it protects a real change, test seam, security boundary, or operational risk.
 
-## Choosing a Slice
+## Choosing a Slice & Reusable-First
 
-Start from a user or business capability, identify its use case, then place the invariant in the Domain and the technical integrations at the edge. Keep names in the business language used by the team. Add a new abstraction only when a second implementation, a test seam, or a clear policy boundary requires it.
+Start from a user or business capability, identify its use case, then place the invariant in the Domain and the technical integrations at the edge. Keep names in the business language used by the team.
+
+When developing new features or creating new files, extract utilities, calculation helpers, formatters, and common invariants into layer-aligned central shared folders (`shared/utils/`, `shared/domain/`, `shared/application/`, `shared/ui/`, `shared/infra/`) rather than inlining them in local feature directories (see `08-shared-and-reusable-modules.md`).

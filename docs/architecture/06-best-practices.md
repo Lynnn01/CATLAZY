@@ -30,10 +30,15 @@ Use package boundaries, dependency checks, lint rules, code review, and focused 
 
 Prioritize high-risk business rules, authorization, money movement, data loss, and critical workflows. Coverage percentage is a signal, not a substitute for testing the failure modes that matter.
 
+### 8. Extract Reusable Logic Early (Reusable-First)
+
+When introducing a new file or feature, proactively identify utilities, pure calculations, formatters, and common invariants. Place them in central shared folders (`shared/utils/`, `shared/domain/`, etc.) to prevent duplicate logic across modules while respecting layer boundaries.
+
 ## Review Questions
 
 - Can a developer find the complete business capability without searching unrelated folders?
 - Can the Domain be tested without a framework, network, or database?
+- Are reusable functions extracted into central shared folders instead of duplicated across local feature folders?
 - Does every cross-module interaction have an explicit contract?
 - Is the chosen abstraction protecting a real boundary, or only anticipating a hypothetical feature?
 - Are failures, authorization, and data-loss scenarios tested at the layer that owns them?
