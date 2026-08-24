@@ -1,6 +1,6 @@
 # Documentation Index
 
-Welcome to the development guidance hub. Documentation is organized into two main areas: **Architecture** and **Design**.
+Welcome to the development guidance hub. Documentation is organized into three main areas: **Architecture**, **Design**, and **Logics**.
 
 ## 🏗️ 1. Software Architecture
 
@@ -27,3 +27,15 @@ Design is split into two complementary disciplines:
 
 - [User Interface](./design/user_interface/INDEX.md): visual tokens, layout, components, and interaction states.
 - [User Experience](./design/user_experience/INDEX.md): information architecture, feedback, performance, accessibility, and validation.
+
+## 🧠 3. Developer Logics & Patterns
+
+Folder: `logics/`
+
+Documentation of coding DNA, domain algorithms, mathematical modeling, defensive invariants, and developer-specific reasoning patterns:
+
+| Profile | Main coverage |
+|---|---|
+| [lynnn/](./logics/lynnn/00-overview.md) | Predicate logic, type guards, defensive invariants, metric trees, priority state machines, and AST custom linters |
+
+
