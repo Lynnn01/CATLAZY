@@ -1,31 +1,39 @@
-# 04. ตรรกะการประเมินสถานะแบบลำดับความสำคัญ (Deterministic Priority State Machine)
+# 04. Deterministic Priority State Machine (State Machines & Transition Systems)
 
-หัวข้อนี้อธิบายถึงตรรกะ State Transition และการตัดสินสถานะรวมของระบบที่มีข้อย่อยจำนวนมาก (เช่น เอกสารตรวจสอบคุณภาพ หรือ Checklist หลายข้อย่อย) ตามหลัก **Cascade Priority และกฎ Veto**
+## 1. Overview & Problem Statement
+In workflow systems and inspection checklists consisting of dozens of sub-items, aggregating heterogeneous sub-item statuses (e.g. pending, verified, pre-approved, approved, rejected) into a single overall status requires a deterministic, conflict-free resolution mechanism. This chapter formalizes the cascade priority state machine, veto resolution rules, and single-pass status reductions.
 
----
+## 2. DISMATH Theoretical Foundation
+- **State Machines & Transition Systems (`04`, `08`):** Deterministic Finite Transition tuples $M = \langle \mathcal{S}, \Sigma, \delta, s_0, \mathcal{F} \rangle$.
+- **Veto Rules & Invariants (`06`):** Absorbing states where a single failure overrides all other positive conditions ($c_{\text{reject}} > 0 \implies \text{REJECT}$).
+- **Vector Space Partitions (`03`):** Single-pass reduction over status count vectors $\vec{C} \in \mathbb{N}^5$.
 
-## 1. ลำดับชั้นสถานะและการประเมินผลรวม (Cascading State Resolution)
+## 3. Formal Mathematical Specifications
 
-### ปัญหาที่แก้
-ในใบงานหรือเอกสารตรวจสอบที่มีข้อย่อยหลายสิบข้อ แต่ละข้ออาจมีสถานะที่แตกต่างกัน เช่น บางข้อตรวจผ่านแล้ว (Approved), บางข้อรอการอนุมัติล่วงหน้า (Pre-Approved), บางข้ออยู่ระหว่างตรวจสอบ (Verified), และบางข้อถูกปฏิเสธ (Rejected)
+### 3.1 State Set and Counter Vector
+Let the set of document/checklist states be:
+$$\mathcal{S} = \{\text{IN\_PROGRESS}, \text{VERIFY}, \text{PRE\_APPROVE}, \text{APPROVE}, \text{REJECT}\}$$
 
-ผู้พัฒนาสร้างฟังก์ชันประเมินสถานะรวมที่ใช้ **กฎสิทธิ์ขาดตามลำดับขั้น (Priority Rule Chain)**:
+Let $\vec{C} = \langle c_p, c_v, c_{pa}, c_a, c_r \rangle \in \mathbb{N}^5$ be the vector representing counts of in-progress, verify, pre-approve, approve, and reject items respectively.
+- Total recorded items: $N_{\text{rec}} = c_p + c_v + c_{pa} + c_a + c_r$.
+- Expected total items: $N_{\text{total}} \in \mathbb{N}^+$.
 
-```
-[1. Has Any Rejection? (Reject > 0)] ───Yes───> REJECT (Veto Rule)
-                  │ No
-[2. All Sub-items Approved?] ───────────Yes───> APPROVE
-                  │ No
-[3. All Current Items Pre-Approved?] ───Yes───> PRE_APPROVE
-                  │ No
-[4. All Current Items Verified?] ───────Yes───> VERIFY
-                  │ No
-                  └───────────────────────────> IN_PROGRESS
-```
+### 3.2 State Transition Function ($\delta: \mathbb{N}^5 \times \mathbb{N}^+ \to \mathcal{S}$)
+The aggregated status resolution follows a strict cascade priority with a **Veto Invariant**:
 
----
+$$\delta(\vec{C}, N_{\text{total}}) = \begin{cases} \text{REJECT} & \text{if } c_r > 0 \quad \text{(Veto Rule)} \\ \text{APPROVE} & \text{if } c_r = 0 \land c_a > 0 \land c_a = N_{\text{total}} \\ \text{PRE\_APPROVE} & \text{if } c_r = 0 \land c_{pa} > 0 \land c_{pa} = N_{\text{rec}} \\ \text{VERIFY} & \text{if } c_r = 0 \land c_v > 0 \land c_v = N_{\text{rec}} \\ \text{IN\_PROGRESS} & \text{otherwise (Default Base State)} \end{cases}$$
 
-## 2. โค้ดตัวอย่างการตัดสินสถานะรวม (Cascade Priority Evaluation)
+## 4. Invariants & Mathematical Proofs
+
+### 4.1 Determinism and Exclusivity
+- **Theorem:** The transition function $\delta(\vec{C}, N_{\text{total}})$ is deterministic (every input vector maps to exactly one state).
+- **Proof:**
+  1. The guards are mutually exclusive by construction (ordered cascade with early termination).
+  2. If $c_r > 0$, the state is immediately $\text{REJECT}$, suppressing all subsequent evaluations.
+  3. The default fallback $\text{IN\_PROGRESS}$ catches all remaining vectors $\vec{C}$, guaranteeing total coverage.
+  4. Therefore, $\delta$ is a well-defined total function. $\blacksquare$
+
+## 5. Sanitized Generic Implementation
 
 ```typescript
 export enum InspectionStatus {
@@ -36,7 +44,7 @@ export enum InspectionStatus {
   REJECT = 'REJECT',
 }
 
-interface StatusCounter {
+export interface StatusCounter {
   inProgress: number;
   verify: number;
   preApprove: number;
@@ -45,7 +53,7 @@ interface StatusCounter {
 }
 
 /**
- * ประเมินสถานะภาพรวมจากจำนวนสถานะของข้อย่อยทั้งหมดตามลำดับความสำคัญ
+ * Deterministic Priority State Machine: Resolves overall status using priority cascade & veto rules
  */
 export const evaluateAggregatedStatus = (
   statusCounts: StatusCounter[],
@@ -58,109 +66,32 @@ export const evaluateAggregatedStatus = (
   const reject = statusCounts.reduce((sum, item) => sum + item.reject, 0);
   const totalRecorded = inProgress + verify + preApprove + approve + reject;
 
-  // 1. กฎ Veto: ถ้ามีข้อย่อยใดถูก Reject แม้แต่ข้อเดียว สถานะภาพรวมจะกลายเป็น REJECT ทันที
+  // 1. Veto Invariant: Any rejection forces overall REJECT immediately
   if (reject > 0) {
     return InspectionStatus.REJECT;
   }
 
-  // 2. สถานะ APPROVE: ข้อย่อยทั้งหมดต้องถูก Approve ครบทุกข้อตามเกณฑ์
+  // 2. Full Approval: All required items must be approved
   if (approve > 0 && approve === expectedTotalSubsections) {
     return InspectionStatus.APPROVE;
   }
 
-  // 3. สถานะ PRE_APPROVE: ข้อมูลที่มีทั้งหมดในปัจจุบันได้รับการ Pre-approve ครบทุกข้อ
+  // 3. Pre-Approval: All currently recorded items are pre-approved
   if (preApprove > 0 && preApprove === totalRecorded) {
     return InspectionStatus.PRE_APPROVE;
   }
 
-  // 4. สถานะ VERIFY: ข้อมูลที่มีทั้งหมดในปัจจุบันได้รับการ Verify ครบทุกข้อ
+  // 4. Verification: All currently recorded items are verified
   if (verify > 0 && verify === totalRecorded) {
     return InspectionStatus.VERIFY;
   }
 
-  // 5. ค่าเริ่มต้น: หากไม่เข้าเงื่อนไขสมบูรณ์ ให้ถือว่าอยู่ในระหว่างดำเนินการ
+  // 5. Default Base State
   return InspectionStatus.IN_PROGRESS;
 };
 ```
 
----
-
-## 3. การนับและจัดกลุ่มสถานะข้อย่อย (Single-Pass Multi-Counting)
-
-### แนวคิด
-นับและจัดหมวดหมู่ Detail พร้อมจำนวน (`counts`) ในการ Loop เพียงรอบเดียว:
-
-```typescript
-interface TopicHistoryItem {
-  historyType: InspectionStatus;
-  comment?: string;
-  Topics: {
-    topicKey: string;
-    description?: string;
-  }[];
-}
-
-/**
- * วิเคราะห์และแยกกลุ่มรายการข้อย่อยพร้อมนับจำนวนสถานะในรอบเดียว (Single Pass)
- */
-export const analyzeSubItemStatuses = (
-  histories: TopicHistoryItem[],
-  targetItemKeys: string[],
-) => {
-  type DetailItem = { key: string; description: string };
-  const categorizedItems: Record<InspectionStatus, DetailItem[]> = {
-    [InspectionStatus.IN_PROGRESS]: [],
-    [InspectionStatus.VERIFY]: [],
-    [InspectionStatus.PRE_APPROVE]: [],
-    [InspectionStatus.APPROVE]: [],
-    [InspectionStatus.REJECT]: [],
-  };
-
-  const counts: StatusCounter = {
-    inProgress: 0,
-    verify: 0,
-    preApprove: 0,
-    approve: 0,
-    reject: 0,
-  };
-
-  targetItemKeys.forEach((key) => {
-    // หาประวัติล่าสุดที่เกี่ยวข้องกับหัวข้อนี้
-    const matchedHistory = histories.find((h) =>
-      h.Topics.some((t) => t.topicKey === key),
-    );
-
-    if (matchedHistory) {
-      const topicData = matchedHistory.Topics.find((t) => t.topicKey === key);
-      const description = topicData?.description || matchedHistory.comment || '';
-      const entry: DetailItem = { key, description };
-
-      // อัปเดตตัวนับและหมวดหมู่ตาม Type
-      switch (matchedHistory.historyType) {
-        case InspectionStatus.IN_PROGRESS:
-          counts.inProgress++;
-          categorizedItems[InspectionStatus.IN_PROGRESS].push(entry);
-          break;
-        case InspectionStatus.VERIFY:
-          counts.verify++;
-          categorizedItems[InspectionStatus.VERIFY].push(entry);
-          break;
-        case InspectionStatus.PRE_APPROVE:
-          counts.preApprove++;
-          categorizedItems[InspectionStatus.PRE_APPROVE].push(entry);
-          break;
-        case InspectionStatus.APPROVE:
-          counts.approve++;
-          categorizedItems[InspectionStatus.APPROVE].push(entry);
-          break;
-        case InspectionStatus.REJECT:
-          counts.reject++;
-          categorizedItems[InspectionStatus.REJECT].push(entry);
-          break;
-      }
-    }
-  });
-
-  return { counts, categorizedItems };
-};
-```
+## 6. Complexity & Algebraic Properties
+- **Time Complexity:** $O(K)$ where $K$ is the number of status groups (single reduction pass).
+- **Space Complexity:** $O(1)$ scalar counter accumulators.
+- **Safety Invariant:** A single failing item ($c_r \ge 1$) can never leak into an approved state.

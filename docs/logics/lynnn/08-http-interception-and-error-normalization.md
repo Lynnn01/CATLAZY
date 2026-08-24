@@ -1,39 +1,68 @@
-# 08. การห่อหุ้ม Response และจัดการ Error ให้เป็นมาตรฐาน (HTTP Interception & Error Normalization)
+# 08. HTTP Interception & Error Normalization (Monads & Idempotent Transformations)
 
-หัวข้อนี้อธิบายถึงตรรกะการแปลง Response ให้มีโครงสร้าง Envelope ที่สม่ำเสมอ (`ResponsePatternInterceptor`), การป้องกันการห่อหุ้มซ้ำซ้อน (Idempotent Wrapping Guard), และการแปลง Error Messages ที่ซับซ้อนให้เข้าใจง่าย (`GlobalExceptionFilter`)
+## 1. Overview & Problem Statement
+HTTP APIs often suffer from inconsistent envelope structures (e.g. inconsistent data wrapping) or catastrophic double-wrapping (`{ data: { data: ... } }`) when interceptors trigger on already-formatted responses. Furthermore, raw database and validation errors (arrays of strings) must be unwrapped into clean, normalized JSON responses without leaking internal stack traces for 4xx errors. This chapter formalizes idempotent response wrapping, Type-Guard projection, and global exception normalization.
 
----
+## 2. DISMATH Theoretical Foundation
+- **Idempotence & Monads (`02`):** Transformations where $f(f(x)) = f(x)$.
+- **Custom Type-Guards as Invariant Indicators (`01`):** Deciding whether an arbitrary payload $x \in \mathcal{E}$.
+- **String Projection Mappings (`03`):** Error unwrapping functions reducing arrays of validation messages into formatted comma-separated strings.
 
-## 1. Idempotent Response Wrapping (`isPatternSuccess` Type Guard)
+## 3. Formal Mathematical Specifications
 
-### แนวคิดและปัญหาที่แก้
-เมื่อสร้าง Response Interceptor เพื่อห่อหุ้ม Payload ให้อยู่ในรูป `{ statusCode, message, data }` ปัญหาที่มักพบคือเมื่อ Controller คืนค่าโครงสร้างที่ถูกจัดรูปแบบมาแล้ว หรือเกิดการเรียก Interceptor ซ้ำ อาจทำให้เกิดการห่อหุ้มซ้อนกันหลายชั้น (เช่น `{ data: { data: ... } }`)
+### 3.1 Idempotent Response Envelope Monad ($\text{Wrap}$)
+Let $\mathcal{U}$ be the arbitrary response payload universe and $\mathcal{E}$ be the standard envelope space:
+$$\mathcal{E} = \{ \langle s, m, d \rangle \mid s \in \mathbb{N}, m \in \Sigma^*, d \in \mathcal{U} \}$$
 
-ผู้พัฒนาแก้ปัญหานี้ด้วย **Type Guard `isPatternSuccess`**:
+We define the wrapping function $\text{Wrap}: \mathcal{U} \to \mathcal{E}$:
+$$\text{Wrap}(x) = \begin{cases} x & \text{if } \text{IsStandardSuccess}(x) \\ \langle \text{statusCode}, \text{'Success'}, x \rangle & \text{otherwise} \end{cases}$$
+
+- **Idempotence Property:**
+  $$\forall x \in \mathcal{U}, \quad \text{Wrap}(\text{Wrap}(x)) = \text{Wrap}(x)$$
+
+### 3.2 Error Normalization Projection ($\pi_{\text{err}}$)
+Let $E$ be an arbitrary exception caught by the system. The normalization function $\pi_{\text{err}}(E)$ maps raw errors to a uniform envelope:
+$$\pi_{\text{err}}(E) = \begin{cases} \langle 500, \text{'Internal Server Error'}, E.\text{message} \rangle & \text{if } E \notin \text{HttpException} \\ \langle E.\text{status}, \text{Join}(', ', E.\text{messages}), E.\text{error} \rangle & \text{if } E.\text{messages} \in \text{Array} \\ \langle E.\text{status}, E.\text{message}, E.\text{error} \rangle & \text{otherwise} \end{cases}$$
+
+## 4. Invariants & Mathematical Proofs
+
+### 4.1 No Double-Wrapping Invariant (Proof by Direct Deduction)
+- **Theorem:** For any response payload $x$, applying the interceptor multiple times will never produce nested wrappers of the form $\{ \text{data}: \{ \text{data}: \dots \} \}$.
+- **Proof:**
+  1. Let $x_1 = \text{Wrap}(x_0)$.
+  2. By definition of $\text{Wrap}$, $x_1$ has keys $\{\text{statusCode}: \text{number}, \text{message}: \text{string}, \text{data}: \text{any}\}$.
+  3. The Type Guard $\text{IsStandardSuccess}(x_1)$ evaluates to $\text{True}$.
+  4. In the second pass: $\text{Wrap}(x_1) = x_1$ because the guard branch directly returns $x_1$.
+  5. By induction, $\text{Wrap}^k(x_0) = \text{Wrap}(x_0)$ for all $k \ge 1$. $\blacksquare$
+
+## 5. Sanitized Generic Implementation
 
 ```typescript
 import {
+  ArgumentsHost,
   CallHandler,
+  Catch,
+  ExceptionFilter,
   ExecutionContext,
+  HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NestInterceptor,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { map, Observable } from 'rxjs';
 
-export type ResponseBody = Record<string, unknown>;
-
-type StandardSuccessResponse = {
+export type StandardSuccessResponse = {
   statusCode: number;
   message: string;
   data: unknown;
 };
 
 /**
- * Type Guard ตรวจสอบว่า Response ถูกจัด Format สำเร็จรูปแล้วหรือไม่ เพื่อป้องกันการ wrap ซ้ำ
+ * Type-Guard: Verifies if a response is already in standard format (Prevents nested wrapping)
  */
-function isStandardSuccess(value: unknown): value is StandardSuccessResponse {
+export function isStandardSuccess(value: unknown): value is StandardSuccessResponse {
   return (
     value !== null &&
     typeof value === 'object' &&
@@ -51,7 +80,7 @@ export class ResponsePatternInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map((body) => {
-        // หากข้อมูลถูกจัดรูปแบบเป็น StandardSuccessResponse อยู่แล้ว ให้ส่งผ่านทันที (Idempotent)
+        // Idempotent Short-Circuit
         if (isStandardSuccess(body)) {
           return body;
         }
@@ -66,36 +95,6 @@ export class ResponsePatternInterceptor implements NestInterceptor {
     );
   }
 }
-```
-
----
-
-## 2. Global Error Normalization & Message Unwrapping
-
-### แนวคิดและปัญหาที่แก้
-ข้อผิดพลาดที่เกิดขึ้นในระบบอาจมาจากหลายแหล่ง:
-1. `HttpException` ทั่วไป (`NotFoundException`, `ForbiddenException`)
-2. Validation Errors ซึ่งส่ง `message` ออกมาเป็น `string[]` (Array ของข้อความเตือน)
-3. Unhandled Runtime Error ซึ่งไม่ใช่ `HttpException`
-
-ผู้พัฒนาจึงสร้าง **Error Normalization Logic** ใน ExceptionFilter เพื่อแปลงข้อความทุกรูปแบบให้เป็น Format ที่สม่ำเสมอ:
-
-```typescript
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
-import { Response } from 'express';
-
-type StandardErrorBody = {
-  statusCode: number;
-  message: string;
-  error: string | string[];
-};
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -105,7 +104,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse<Response>();
     const body = this.buildErrorBody(exception);
 
-    // บันทึก Log เฉพาะข้อผิดพลาดระดับ Server Error (>= 500) เพื่อไม่ให้ Log บวม
     if (body.statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(
         exception instanceof Error ? exception.message : 'Unknown server error',
@@ -116,8 +114,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response.status(body.statusCode).json(body);
   }
 
-  private buildErrorBody(exception: Error | HttpException | object): StandardErrorBody {
-    // 1. จัดการ Unhandled Exception ทั่วไป
+  private buildErrorBody(exception: Error | HttpException | object) {
     if (!(exception instanceof HttpException)) {
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -133,7 +130,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       return { statusCode: status, message: raw, error: raw };
     }
 
-    // 2. Unpack Message: รวม Array ของ Validation Error ให้กลายเป็น Comma-Separated String
     const record = raw as { message?: string | string[]; error?: string };
     const rawMessage = record.message;
     const message = Array.isArray(rawMessage)
@@ -150,3 +146,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   }
 }
 ```
+
+## 6. Complexity & Algebraic Properties
+- **Interception Overhead:** $O(1)$ evaluation time per HTTP request/response.
+- **Idempotence Invariant:** Guarantees uniform API contract irrespective of controller return shape.

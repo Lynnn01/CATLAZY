@@ -1,33 +1,53 @@
-# 06. การควบคุมคุณภาพโค้ดระดับ AST (Custom AST Linter Rules)
+# 06. Custom AST Linter Rules & Static Guardrails (Tree Graphs & Static Analysis)
 
-หัวข้อนี้อธิบายถึง Custom ESLint Rules เพื่อบังคับใช้มาตรฐานโค้ด สัจพจน์ความปลอดภัย และ Immutability อัตโนมัติในระดับ Abstract Syntax Tree (AST)
+## 1. Overview & Problem Statement
+Code conventions and architectural rules often decay over time without automated enforcement. Manual code reviews frequently miss unpaginated queries leading to Out-Of-Memory (OOM) failures or mutable dependency injections causing race conditions. This chapter formalizes static code analysis, Abstract Syntax Tree (AST) tree-traversal invariants, and automated rewrite rules.
 
----
+## 2. DISMATH Theoretical Foundation
+- **Tree Structures & Graph Theory (`08`):** Abstract Syntax Trees as rooted, directed acyclic trees $\mathcal{T} = \langle \mathcal{V}, \mathcal{E}, r \rangle$.
+- **Quantified Tree Invariants (`03`):** Universal assertions over specific node subsets ($\forall v \in \mathcal{V}_{\text{class}}, P(v)$).
+- **Confluent Tree Rewriting (`08`):** Finite-step monotonic AST code transformations (Auto-Fixers).
 
-## 1. รายการ Custom AST Rules ที่สร้างขึ้น
+## 3. Formal Mathematical Specifications
 
-| ชื่อ Rule | หมวดหมู่ | วัตถุประสงค์และการตรวจสอบ |
-| :--- | :--- | :--- |
-| `nestjs-readonly-injectables` | Immutability | บังคับให้ Injected Dependency ใน Constructor ต้องเป็น `private readonly` (รองรับ Auto-fix) |
-| `typeorm-joint-column-fk` | Constraint Naming | บังคับให้ Relation Foreign Key ระบุชื่อ Constraint ชัดเจน `{table}_{column}_fkey` |
-| `nestjs-kebab-case-routes` | API Convention | บังคับให้ HTTP Route Path ทั้งหมดใช้รูปแบบ `kebab-case` |
-| `typeorm-safe-transaction` | Reliability | บังคับโครงสร้าง Transaction ให้มี try/commit/catch/rollback/finally/release ครบถ้วน |
-| `typeorm-enforce-pagination` | Memory Safety | บังคับให้ Query (`find`, `getMany`) ต้องมี `take` หรือ `limit` เสมอ เพื่อป้องกัน OOM |
-| `typeorm-introspected-entity` | Database Invariant | ควบคุม Invariants ใน Entity (ห้าม `@Unique` บน Column ทั่วไป, บังคับ Timestamp Precision 3) |
-| `typeorm-new-relation` | Data Integrity | ควบคุมมาตรฐานการตั้งชื่อ Property และ Decorator Relations |
+### 3.1 Abstract Syntax Tree (AST) as a Directed Tree
+An Abstract Syntax Tree is a directed acyclic tree $\mathcal{T} = \langle \mathcal{V}, \mathcal{E}, r \rangle$, where:
+- $\mathcal{V}$ is the set of AST nodes (ClassDeclaration, MethodDefinition, ParameterProperty, etc.).
+- $\mathcal{E} \subset \mathcal{V} \times \mathcal{V}$ is the set of parent-child syntax edges.
+- $r \in \mathcal{V}$ is the root Program node.
 
----
+### 3.2 Immutability Invariant Rule ($\text{Rule}_{\text{readonly}}$)
+Let $\mathcal{V}_{\text{class}} \subset \mathcal{V}$ be class declaration nodes.
+$$\forall v \in \mathcal{V}_{\text{class}}, \quad \text{HasDecorator}(v, \text{'Injectable'} \lor \text{'Controller'}) \implies \left( \forall p \in \text{Params}(\text{Ctor}(v)), \text{IsReadonly}(p) \right)$$
 
-## 2. ตัวอย่างการเขียน AST Rule และ Auto-Fixer
+### 3.3 Memory Safety Query Invariant ($\text{Rule}_{\text{pagination}}$)
+Let $\mathcal{V}_{\text{query}} \subset \mathcal{V}$ be TypeORM repository query call nodes.
+$$\forall v \in \mathcal{V}_{\text{query}}, \quad \text{MethodName}(v) \in \{\text{'find'}, \text{'getMany'}\} \implies \text{HasOption}(v, \text{'take'} \lor \text{'limit'})$$
 
-### `nestjs-readonly-injectables`
-ตรวจจับ Constructor Parameter Properties ในคลาสที่มี `@Injectable` หรือ `@Controller` หากขาดคีย์เวิร์ด `readonly` จะแจ้งเตือนพร้อม Auto-fix เติม `readonly` ให้ทันที:
+## 4. Invariants & Mathematical Proofs
+
+### 4.1 Decidability and Finite Termination of AST Traversal
+- **Theorem:** For any source file with $N$ AST nodes, the custom linter inspection terminates in $O(N)$ steps.
+- **Proof:**
+  1. The AST $\mathcal{T}$ is a finite tree with $|\mathcal{V}| = N < \infty$.
+  2. The visitor pattern visits each node $v \in \mathcal{V}$ exactly once via depth-first search.
+  3. Pattern matching and predicate evaluations at each node take $O(1)$ local operations.
+  4. Therefore, total execution time is $O(N)$ and halting is guaranteed. $\blacksquare$
+
+### 4.2 Confluence of Auto-Fix Rewriter
+- **Theorem:** Applying the `readonly` auto-fixer transforms the AST to satisfy the Immutability Invariant monotonically without introducing syntax conflicts.
+- **Proof:** The auto-fixer performs a deterministic string insertion (`' readonly'`) directly after the access modifier token (`'private'`), transforming $\text{IsReadonly}(p) = \text{False} \to \text{True}$ in a single pass. $\blacksquare$
+
+## 5. Sanitized Generic Implementation
 
 ```javascript
 import { AST_NODE_TYPES, ESLintUtils } from '@typescript-eslint/utils';
 
 const createRule = ESLintUtils.RuleCreator((name) => `custom/${name}`);
 
+/**
+ * AST Rule: Enforces 'readonly' on injected constructor dependencies in NestJS classes
+ */
 export const nestjsReadonlyInjectablesRule = createRule({
   name: 'nestjs-readonly-injectables',
   meta: {
@@ -45,7 +65,6 @@ export const nestjsReadonlyInjectablesRule = createRule({
   create(context) {
     return {
       ClassDeclaration(node) {
-        // ตรวจสอบว่าคลาสมี @Injectable หรือ @Controller
         const hasNestDecorator = node.decorators && node.decorators.some((d) => {
           if (d.expression.type === AST_NODE_TYPES.CallExpression) {
             const callee = d.expression.callee;
@@ -57,16 +76,14 @@ export const nestjsReadonlyInjectablesRule = createRule({
 
         if (!hasNestDecorator) return;
 
-        // หา Constructor
         const ctor = node.body.body.find(
           (el) => el.type === AST_NODE_TYPES.MethodDefinition && el.kind === 'constructor',
         );
         if (!ctor) return;
 
-        // ตรวจสอบพารามิเตอร์แต่ละตัว
         for (const param of ctor.value.params) {
           if (param.type === AST_NODE_TYPES.TSParameterProperty && !param.readonly) {
-            let paramName = param.parameter.type === AST_NODE_TYPES.Identifier ? param.parameter.name : 'unknown';
+            const paramName = param.parameter.type === AST_NODE_TYPES.Identifier ? param.parameter.name : 'unknown';
 
             context.report({
               node: param,
@@ -92,20 +109,7 @@ export const nestjsReadonlyInjectablesRule = createRule({
 });
 ```
 
----
-
-## 3. การลงทะเบียน Custom Rules ใน ESLint Config
-
-```javascript
-export const customRulesPlugin = {
-  rules: {
-    'nestjs-readonly-injectables': nestjsReadonlyInjectablesRule,
-    'nestjs-kebab-case-routes': nestjsKebabCaseRoutesRule,
-    'typeorm-joint-column-fk': typeormJointColumnFkRule,
-    'typeorm-safe-transaction': typeormSafeTransactionRule,
-    'typeorm-enforce-pagination': typeormEnforcePaginationRule,
-    'typeorm-introspected-entity': typeormIntrospectedEntityRule,
-    'typeorm-new-relation': typeormNewRelationRule,
-  },
-};
-```
+## 6. Complexity & Algebraic Properties
+- **Time Complexity:** $O(N)$ linear traversal across all $N$ AST syntax nodes.
+- **Memory Complexity:** $O(D)$ where $D$ is the maximum AST nesting depth.
+- **Formal Invariant Guarantee:** Compile-time AST linting prevents runtime immutability bugs.

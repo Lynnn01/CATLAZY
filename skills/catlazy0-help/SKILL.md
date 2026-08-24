@@ -35,6 +35,7 @@ Display the one-shot quick reference for `catlazy`.
 - **`/catlazy7-debt`:** collect `catlazy:` comments into the debt ledger.
 - **`/catlazy8-agent`:** review and update project rules into a simpler, consistent structure.
 - **`/catlazy10-loop`:** force the agent to continuously execute a task until validated multiple times without findings.
+- **`/catlazy11-logic`:** extract and formalize codebase logic into discrete mathematical logic specifications (DISMATH).
 
 ### ⚙️ Stop and Configure
 

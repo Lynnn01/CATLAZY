@@ -1,15 +1,46 @@
-# 02. ตรรกะการแปลงและการจัดการข้อมูล (Functional Transformation & Lookup Engines)
+# 02. Functional Transformations & Lookup Engines (Functions & Relations)
 
-หัวข้อนี้สรุปรูปแบบการประมวลผลข้อมูล การจัดกลุ่ม และการแปลงข้อมูลแบบ Functional Programming ของผู้พัฒนา ที่เน้นการลดความซับซ้อนของ Code Branch และเพิ่มประสิทธิภาพในการค้นหาข้อมูล
+## 1. Overview & Problem Statement
+Imperative nested `switch-case` and `if-else` branching creates cognitive complexity, increases cyclomatic complexity, and makes testing error-prone. Additionally, linear searching across relational records yields $O(N \times M)$ overhead. This chapter formalizes table-driven boolean mappings, monadic plucking, injective lookup maps, and multi-predicate partitioning.
 
----
+## 2. DISMATH Theoretical Foundation
+- **Boolean Functions (`01`, `09`):** Total mapping functions from finite domain sets to truth values ($M: \text{Roles} \to \{0, 1\}$).
+- **Functions and Relations (`03`):** Injective mappings (one-to-one hash maps) $f: \text{Keys} \hookrightarrow \text{Values}$.
+- **Monoids & Left-Folds (`07`):** Inductive collection reduction ($\text{foldl}$) for property extraction.
+- **Partitioning Calculus (`03`):** Disjoint predicate grouping over collections.
 
-## 1. Pure Mapping Table Pattern (แทนที่ `switch-case` และ `if-else`)
+## 3. Formal Mathematical Specifications
 
-### แนวคิดและปัญหาที่แก้
-การเขียน `switch-case` หรือ `if-else` หลายชั้นทำให้โค้ดยาว อ่านยาก และเสี่ยงต่อการลืม `break` หรือครอบคลุมไม่ครบทุกเคส ผู้พัฒนาเลือกแปลงเงื่อนไขทั้งหมดให้กลายเป็น **Data Structure แบบ `Record<Key, Value>`**
+### 3.1 Boolean Role Requirement Function ($M_{\text{req}}$)
+Let $\text{Roles} = \{\text{SUPER\_ADMIN}, \text{ADMIN}, \text{MANAGER}, \text{OPERATOR}\}$ and $\text{Scope} = \langle \mathcal{O}, \mathcal{D}, \mathcal{T} \rangle$.
+- Define indicator predicates: $h_O \iff \text{HasItems}(\mathcal{O})$, $h_D \iff \text{HasItems}(\mathcal{D})$, $h_T \iff \text{HasItems}(\mathcal{T})$.
+- The requirement mapping is a total function $M_{\text{req}}: \text{Roles} \to \{0, 1\}$:
+  $$M_{\text{req}}(r) = \begin{cases} 1 & \text{if } r = \text{SUPER\_ADMIN} \\ h_O & \text{if } r = \text{ADMIN} \\ h_O \land h_D & \text{if } r = \text{MANAGER} \\ h_O \land h_D \land h_T & \text{if } r = \text{OPERATOR} \end{cases}$$
+
+### 3.2 Monadic Property Extraction ($\text{pluck}$ as Left-Fold)
+Given an array $A = \langle x_1, x_2, \dots, x_n \rangle$ where each $x_i \in \text{Record}$ and property key $k \in \text{Keys}(\text{Record})$:
+$$\text{pluck}(A, k) \Coloneqq \text{foldl}\left(\lambda \text{acc}, x \to \begin{cases} \text{acc} \mathbin{\Vert} \langle x.k \rangle & \text{if } x.k \ne \text{null} \land x.k \ne \text{undefined} \\ \text{acc} & \text{otherwise} \end{cases}, \langle \rangle, A\right)$$
+
+### 3.3 Fast Lookup Injective Mapping ($\text{buildLookupEngine}$)
+Let $\mathcal{I}_{\text{raw}} = \{(k_i, v_i)\}$ be input image/metric pairs.
+$$\mathcal{M}_{\text{lookup}}: \text{Keys} \hookrightarrow \text{Values} \cup \{\bot\}$$
+$$\mathcal{M}_{\text{lookup}}(k) = \begin{cases} v & \text{if } (k, v) \in \mathcal{I}_{\text{raw}} \\ \bot & \text{otherwise} \end{cases}$$
+
+## 4. Invariants & Mathematical Proofs
+
+### 4.1 Monotonicity of Role Permissions
+- **Theorem:** Let the hierarchy order be $\text{SUPER\_ADMIN} \prec \text{ADMIN} \prec \text{MANAGER} \prec \text{OPERATOR}$. The requirement constraint is strictly monotonic:
+  $$r_1 \prec r_2 \implies M_{\text{req}}(r_1) \impliedby M_{\text{req}}(r_2)$$
+- **Proof:**
+  1. For $r_1 = \text{SUPER\_ADMIN}$, $M_{\text{req}}(r_1) = 1$. The proposition $X \implies 1$ is a tautology.
+  2. For $r_1 = \text{ADMIN}$ and $r_2 = \text{MANAGER}$, $M_{\text{req}}(r_2) = (h_O \land h_D) \implies h_O = M_{\text{req}}(r_1)$ by simplification rule.
+  3. By hypothetical syllogism, monotonicity holds across all ranks. $\blacksquare$
+
+## 5. Sanitized Generic Implementation
 
 ```typescript
+import _ from 'lodash';
+
 type RoleType = 'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'OPERATOR';
 
 interface ScopeContext {
@@ -19,131 +50,40 @@ interface ScopeContext {
 }
 
 /**
- * ตรวจสอบความพร้อมของข้อมูลขอบเขตตามที่แต่ละบทบาทต้องการ ด้วย Mapping Table
+ * Functional Role Mapping Table: Replaces nested if-else with a deterministic Record lookup
  */
 export function hasRequiredScopeByRole(role: RoleType, scope: ScopeContext): boolean {
   const { organizationIds, departmentIds, teamIds } = scope;
 
-  const hasOrg = hasItems(organizationIds);
-  const hasDept = hasItems(departmentIds);
-  const hasTeam = hasItems(teamIds);
+  const hasOrg = Boolean(organizationIds?.length);
+  const hasDept = Boolean(departmentIds?.length);
+  const hasTeam = Boolean(teamIds?.length);
 
-  // Mapping Table กำหนดเงื่อนไขเชิงตรรกะของแต่ละ Role
   const roleRequirementsMap: Record<RoleType, boolean> = {
+    SUPER_ADMIN: true,
     ADMIN: hasOrg,
     MANAGER: hasOrg && hasDept,
     OPERATOR: hasOrg && hasDept && hasTeam,
-    SUPER_ADMIN: true,
   };
 
   return Boolean(roleRequirementsMap[role]);
 }
-```
 
-และสำหรับการจับคู่ Filter เงื่อนไข Query:
-```typescript
-export const buildRoleFilterCondition = (role: RoleType, scope: ScopeContext) => {
-  const orgFilter = createSafeBoundaryFilter(scope.organizationIds);
-  const deptFilter = createSafeBoundaryFilter(scope.departmentIds);
-  const teamFilter = createSafeBoundaryFilter(scope.teamIds);
-
-  const roleFilterMap: Record<RoleType, object> = {
-    ADMIN: { Organization: { id: orgFilter } },
-    MANAGER: { Organization: { id: orgFilter }, Department: { id: deptFilter } },
-    OPERATOR: { Organization: { id: orgFilter }, Department: { id: deptFilter }, Team: { id: teamFilter } },
-    SUPER_ADMIN: {},
-  };
-
-  return roleFilterMap[role] ?? {};
-};
-```
-
----
-
-## 2. Functional Property Extraction (`pluck` ด้วย `.reduce`)
-
-### แนวคิดและปัญหาที่แก้
-เมื่อต้องการดึง Property เฉพาะจาก Array ของ Objects โดยต้องการกรองค่าที่เป็น `null` หรือ `undefined` ออก พร้อมรักษา Type Safety ไว้อย่างแม่นยำ:
-
-```typescript
 /**
- * สกัดค่า Property ที่ต้องการจาก Array ของ Objects โดยตัด null/undefined และคืนค่า Type ปลอดภัย
+ * Safe Property Plucking via Left Fold (.reduce) with Type Narrowing
  */
 export function pluck<T, K extends keyof T>(
   arr: T[] | undefined,
   key: K,
 ): NonNullable<T[K]>[] {
   return (arr ?? []).reduce((acc: NonNullable<T[K]>[], item: T) => {
-    if (item[key] != null) acc.push(item[key]);
+    if (item[key] != null) acc.push(item[key] as NonNullable<T[K]>);
     return acc;
   }, []);
 }
 
-// ตัวอย่างการใช้งานสกัด IDs:
-export function extractScopeContext(userProfile: UserProfileWithRelations | null) {
-  return {
-    organizationIds: pluck(userProfile?.Organizations, 'id'),
-    departmentIds: pluck(userProfile?.Departments, 'id'),
-    teamIds: pluck(userProfile?.Teams, 'id'),
-  };
-}
-```
-
----
-
-## 3. Lookup Engine ด้วย `new Map()` สำหรับการจับคู่หลายหมวดหมู่
-
-### แนวคิดและปัญหาที่แก้
-เมื่อต้องประกอบข้อมูลจากหลายตารางย่อยเข้ากับ Template หรือ Section การวนลูปค้นหาทีละ Record จะทำให้ความเร็วตกเป็น $O(N \times M)$
-
-ผู้พัฒนาแก้ปัญหานี้โดยการสร้าง **Data Lookup Map** เพียงครั้งเดียว แล้วดึงข้อมูลด้วย $O(1)$:
-
-```typescript
-interface DataRecordItem {
-  categoryKey: string;
-  payload: string | null;
-  kind: 'image' | 'text' | 'numeric';
-}
-
 /**
- * สร้าง Map Lookup เพื่อการเข้าถึงข้อมูลที่เชื่อมโยงกันด้วย O(1)
- */
-export const buildLookupEngine = (
-  rawImages: { key: string; path: string }[],
-  rawMetrics: { key: string; value: string | number }[],
-): Map<string, { value: string | null; type: 'image' | 'text' }> => {
-  const lookup = new Map<string, { value: string | null; type: 'image' | 'text' }>();
-
-  // จับคู่ข้อมูลประเภทรูปภาพ
-  rawImages.forEach((img) => {
-    if (img.key) {
-      lookup.set(img.key, { value: img.path, type: 'image' });
-    }
-  });
-
-  // จับคู่ข้อมูลประเภทข้อความ/สถิติ
-  rawMetrics.forEach((metric) => {
-    if (metric.key) {
-      lookup.set(metric.key, { value: String(metric.value), type: 'text' });
-    }
-  });
-
-  return lookup;
-};
-```
-
----
-
-## 4. Multi-Predicate Partitioning (`filterGroupBy`)
-
-### แนวคิดและปัญหาที่แก้
-เมื่อต้องการแยกกลุ่มข้อมูลก้อนเดียวออกเป็นหลายหมวดหมู่ตามฟังก์ชันเงื่อนไข (Predicate) ที่แตกต่างกัน โดยไม่ต้องเขียน `filter` ซ้ำหลายรอบ:
-
-```typescript
-import _ from 'lodash';
-
-/**
- * จัดกลุ่มข้อมูลตามรายการ Predicate Map หลายๆ เงื่อนไขในคำสั่งเดียว
+ * Multi-Predicate Partitioning Engine (ZipObject of Predicate Filters)
  */
 export function filterGroupBy<T, K extends string | number | symbol>(
   items: T[],
@@ -159,21 +99,7 @@ export function filterGroupBy<T, K extends string | number | symbol>(
 }
 ```
 
-**ตัวอย่างการนำไปใช้:**
-```typescript
-enum TaskExecutionStatus {
-  ON_SCHEDULE = 'ON_SCHEDULE',
-  BEHIND_SCHEDULE = 'BEHIND_SCHEDULE',
-}
-
-const EXECUTION_PREDICATE_MAP: Record<TaskExecutionStatus, (t: TaskItem) => boolean> = {
-  [TaskExecutionStatus.ON_SCHEDULE]: (t) => t.isDelayed === false,
-  [TaskExecutionStatus.BEHIND_SCHEDULE]: (t) => t.isDelayed === true,
-};
-
-const { ON_SCHEDULE, BEHIND_SCHEDULE } = filterGroupBy(
-  completedTasks,
-  [TaskExecutionStatus.ON_SCHEDULE, TaskExecutionStatus.BEHIND_SCHEDULE],
-  EXECUTION_PREDICATE_MAP,
-);
-```
+## 6. Complexity & Algebraic Properties
+- **`hasRequiredScopeByRole`:** $O(1)$ evaluation time and $O(1)$ memory.
+- **`pluck`:** $O(N)$ linear time complexity and $O(M)$ output memory ($M \le N$).
+- **Lookup Access:** $O(1)$ average-case retrieval via Hash Map bijection.
