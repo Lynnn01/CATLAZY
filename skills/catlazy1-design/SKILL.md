@@ -18,6 +18,7 @@ Use this skill before every type of work, including frontend, backend, UI/UX, an
 Quickly inspect the project:
 
 - Read `AGENTS.md` and relevant `.rules/` files.
+- Inspect the directory tree using `/catlazy9-tree` (or targeted subtree) to confirm layer placement and avoid misplacing new modules.
 - Check the applicable layers in `docs/architecture/` (including `08-shared-and-reusable-modules.md`) and `docs/design/`.
 - Inspect existing `shared/` utilities, domain models, and likely files to identify reuse opportunities and avoid duplicating existing functions.
 

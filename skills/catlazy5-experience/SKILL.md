@@ -8,8 +8,9 @@ When invoked with `/catlazy5-experience`, inspect UI/frontend flows against **`d
 
 ### ⚙️ Core Rules
 
-1. **Do not edit immediately (critical):** scan the flow and present findings first. Wait for user approval or a selected fix before editing.
-2. Use these tags:
+1. **Pre-audit UX Flow Tree:** before inspecting UX interactions, run or simulate `/catlazy9-tree report --scope <routes-or-pages-path> --depth 3 --format normal` (e.g. `pages/`, `views/`, `routes/`, `features/`) to map user journeys, page hierarchies, and navigation paths.
+2. **Do not edit immediately (critical):** scan the flow and present findings first. Wait for user approval or a selected fix before editing.
+3. Use these tags:
    - `[ux-clutter]`: excessive information density that violates progressive disclosure.
    - `[ux-silent]`: missing hover/active/disabled feedback, loading state, success/error notification, or other response to an action.
    - `[ux-empty]`: no contextual empty state when a list or screen has no data.

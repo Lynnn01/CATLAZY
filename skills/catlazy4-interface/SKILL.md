@@ -8,8 +8,9 @@ When invoked with `/catlazy4-interface`, inspect all UI and frontend code agains
 
 ### ⚙️ Core Rules
 
-1. **Do not edit immediately (critical):** scan the UI and present findings first. Wait for user approval or a selected fix before editing.
-2. Use these tags:
+1. **Pre-audit UI Tree:** before inspecting styling details, run or simulate `/catlazy9-tree report --scope <ui-path> --depth 3 --format normal` (e.g. `src/presentation/`, `components/`, `ui/`, `styles/`) to map atomic UI components, design tokens, and layout hierarchy.
+2. **Do not edit immediately (critical):** scan the UI and present findings first. Wait for user approval or a selected fix before editing.
+3. Use these tags:
    - `[ui-color]`: raw hex colors or colors that conflict with the defined design tokens.
    - `[ui-layout]`: fixed dimensions that break responsive behavior or cause horizontal scrolling.
    - `[ui-a11y]`: contrast below 4.5:1, missing `alt`, removed focus rings, or another accessibility failure.

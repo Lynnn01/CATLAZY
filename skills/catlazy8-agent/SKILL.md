@@ -8,11 +8,12 @@ Review `.rules/AGENTS.md` and related project rules for duplication, contradicti
 
 ### ⚙️ Workflow
 
-1. Read the current rules and identify the smallest set of authoritative instructions.
-2. Search the repository for rules that reference the same behavior and check for conflicts.
-3. Report proposed simplifications first; do not edit without user approval.
-4. When approved, update the rule files, preserve safety/security/accessibility requirements, and verify every referenced path.
-5. Record what changed and run a final consistency check.
+1. **Pre-audit Governance Tree:** before modifying rules, run or simulate `/catlazy9-tree report --scope .rules/ --depth 2 --format normal` (along with `skills/`, `.cursor/`, `.github/`) to map all rule governance and configuration locations.
+2. Read the current rules and identify the smallest set of authoritative instructions.
+3. Search the repository for rules that reference the same behavior and check for conflicts.
+4. Report proposed simplifications first; do not edit without user approval.
+5. When approved, update the rule files, preserve safety/security/accessibility requirements, and verify every referenced path.
+6. Record what changed and run a final consistency check.
 
 ### Task Context and Approved Changes
 

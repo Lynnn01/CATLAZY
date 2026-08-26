@@ -8,11 +8,12 @@ Inspect the entire repository for dead code, duplication, unnecessary dependenci
 
 ### ⚙️ Core Rules
 
-1. Read repository rules and the relevant architecture/design docs first.
-2. Search all references before recommending deletion or renaming.
-3. Do not edit immediately; present findings and wait for approval.
-4. Never recommend deleting security, accessibility, data-loss handling, tests, or required architecture layers merely to reduce line count.
-5. Classify findings as deletion, consolidation into central `shared/` modules, reuse, dependency removal, or intentional complexity.
+1. **Pre-audit Full Repository Tree:** before inspecting code, run or simulate `/catlazy9-tree report --scope . --depth 5 --format strict` to scan the full directory tree for `[tree-empty-dir]`, `[tree-deep-nesting]`, dead folders, and duplicate utility directories.
+2. Read repository rules and the relevant architecture/design docs first.
+3. Search all references before recommending deletion or renaming.
+4. Do not edit immediately; present findings and wait for approval.
+5. Never recommend deleting security, accessibility, data-loss handling, tests, or required architecture layers merely to reduce line count.
+6. Classify findings as deletion, consolidation into central `shared/` modules, reuse, dependency removal, or intentional complexity.
 
 ### Task Context and Approved Changes
 

@@ -8,9 +8,10 @@ When invoked with `/catlazy3-architecture`, inspect the entire repository and co
 
 ### ⚙️ Core Rules
 
-1. **Do not edit immediately (critical):** scan the repository and present findings first. Wait for the user to approve the findings or select fixes before editing files.
-2. Order findings from the most severe architectural risk to the least severe.
-3. Use the following tags:
+1. **Pre-audit Architecture Tree:** before inspecting code details, run or simulate `/catlazy9-tree report --scope <path> --depth 4 --format strict` to map the 4-layer structure (Domain, Application, Infrastructure, Presentation) and central `shared/` folders, checking for directory-level layer anomalies.
+2. **Do not edit immediately (critical):** scan the repository and present findings first. Wait for the user to approve the findings or select fixes before editing files.
+3. Order findings from the most severe architectural risk to the least severe.
+4. Use the following tags:
    - `[arch-leak]`: framework, database, or infrastructure code leaks into the Domain layer.
    - `[arch-bypass]`: Presentation calls infrastructure or a database directly instead of going through the Application layer.
    - `[arch-anemic]`: a Domain entity has only getters/setters and no meaningful business behavior.
