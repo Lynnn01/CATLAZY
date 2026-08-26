@@ -37,7 +37,6 @@ Documentation of coding DNA, domain algorithms, mathematical modeling, defensive
 | Profile | Main coverage |
 |---|---|
 | [dismath/](./logics/dismath/00-overview.md) | Discrete Mathematics logic curriculum (Kenneth Rosen): Propositional logic, Equivalences, Predicates, Quantifiers, Rules of Inference, Proof Methods, Mathematical Induction, and Hoare Logic Program Correctness |
-| [lynnn/](./logics/lynnn/00-overview.md) | Predicate logic, type guards, defensive invariants, metric trees, priority state machines, and AST custom linters |
 
 
 
