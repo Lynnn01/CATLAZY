@@ -18,6 +18,11 @@ When invoked with `/catlazy9-tree`, recursively inspect the project directory st
    - `[tree-layer-leakage]`: folder naming or placement violates Clean Architecture layer boundaries.
    - `[tree-unshared]`: duplicate local utility folders that should be consolidated into central `shared/`.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Directory tree classification is formally grounded in:
+- **Ch. 03 (Predicate Logic & Universe of Discourse):** Let universe $U_{\text{dirs}}$ be all directories. Every directory $d$ is mapped via a classification predicate $\text{Layer}(d) \in \{\text{Domain}, \text{App}, \text{Infra}, \text{Pres}, \text{Shared}, \text{Config}, \text{Docs}, \text{Tests}\}$. Structural anomalies are predicate falsifications ($\exists d : \text{Empty}(d) \lor \text{Depth}(d) > 5$). Reference: [`docs/logics/dismath/03-predicate-logic-and-quantifiers.md`](../../docs/logics/dismath/03-predicate-logic-and-quantifiers.md).
+
 ### Standards Resolution
 
 Resolve `docs/architecture/` in this order before mapping:

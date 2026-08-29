@@ -16,6 +16,11 @@ When invoked with `/catlazy5-experience`, inspect UI/frontend flows against **`d
    - `[ux-empty]`: no contextual empty state when a list or screen has no data.
    - `[ux-inconsistent]`: action placement or terminology conflicts with the rest of the product and violates familiar or internal consistency.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+User experience state auditing is mathematically grounded in:
+- **Ch. 01–02 (Propositional State Completeness & Invariants):** Every interactive control must satisfy the completeness proposition: $\forall \text{Action}, \text{State}_{\text{loading}} \lor \text{State}_{\text{feedback}} \lor \text{State}_{\text{error}} \not\equiv \mathbf{F}$. If an action transitions to a silent state ($\neg \text{Feedback} \land \neg \text{Loading}$), it triggers $[ux\text{-}silent]$. Reference: [`docs/logics/dismath/01-propositional-logic.md`](../../docs/logics/dismath/01-propositional-logic.md), [`02-logical-equivalences.md`](../../docs/logics/dismath/02-logical-equivalences.md).
+
 ### Standards Resolution
 
 Resolve `docs/design/user_experience/` in this order before auditing:

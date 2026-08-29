@@ -19,6 +19,16 @@ When invoked with `/catlazy3-architecture`, inspect the entire repository and co
    - `[arch-unshared]`: general utility or reusable domain/application logic is inlined in a local feature rather than central `shared/` folders.
    - `[arch-shared-leak]`: code in a central `shared/` directory imports feature-specific modules.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Architectural boundaries are expressed as universal quantified predicates:
+- **Ch. 03–04 (Predicate Logic & Nested Quantifiers):**
+  - $I_{\text{Domain}}: \forall f \in \text{Domain}, \forall d \in \text{Imports}(f) : \text{Layer}(d) \notin \{\text{Infra}, \text{Pres}\} \implies [arch\text{-}leak] \text{ if false}$
+  - $I_{\text{Pres}}: \forall f \in \text{Pres}, \forall d \in \text{Imports}(f) : \text{Layer}(d) \neq \text{Infra} \implies [arch\text{-}bypass] \text{ if false}$
+  - $I_{\text{Shared}}: \forall s \in \text{Shared}, \forall d \in \text{Imports}(s) : \text{Layer}(d) \notin \text{Features} \implies [arch\text{-}shared\text{-}leak] \text{ if false}$
+  Reference: [`docs/logics/dismath/03-predicate-logic-and-quantifiers.md`](../../docs/logics/dismath/03-predicate-logic-and-quantifiers.md), [`04-nested-quantifiers.md`](../../docs/logics/dismath/04-nested-quantifiers.md).
+- **Ch. 05 (Rules of Inference):** Dependency paths follow transitive implication: $\text{Presentation} \to \text{Application} \to \text{Domain}$. Direct shortcuts violate transitive syllogism. Reference: [`docs/logics/dismath/05-rules-of-inference.md`](../../docs/logics/dismath/05-rules-of-inference.md).
+
 ### Standards Resolution
 
 Resolve `docs/architecture/` in this order before auditing:

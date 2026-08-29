@@ -101,3 +101,15 @@ All Catlazy skills, reviews, audits, and reports MUST output using the exact 3-s
   - `Diff & Side-effects`
 - **Verdict:** concise one-line verdict statement.
 - **Terminal Status:** conclude with exactly one status: `CATLAZY_DONE`, `CATLAZY_BLOCKED: <reason>`, or `CATLAZY_UNVERIFIED: <missing check>`.
+
+## 10. DISMATH Reasoning Standard (Formal Logic Foundation)
+
+`docs/logics/dismath/` is the formal reasoning foundation for all Catlazy skills, architecture, plans, and rules. See `docs/logics/dismath/11-catlazy-formal-methods.md` for complete chapter mappings.
+
+- **Planning with Hoare triples (critical):** every implementation plan in `docs/plans/YYYY-MM-DD-*.md` MUST follow the Hoare triple structure $\{P\} S \{Q\}$ (DISMATH Ch. 08), specifying pre-condition $\{P\}$, statement/changes $S$, post-condition $\{Q\}$, and system invariants $\{I\}$.
+- **Predicate architecture invariants:** layer rules are universal quantified predicates $\forall f \in \text{Layer}, \forall d \in \text{Imports}(f)$ (DISMATH Ch. 03–04). Findings (`[arch-leak]`, `[arch-bypass]`) are formal counterexamples.
+- **Inference & Fallacy guard:** reasoning during review, audit, and decision-making MUST use valid rules of inference (Modus Ponens, Modus Tollens, Resolution) (DISMATH Ch. 05). Informal fallacies (affirming the consequent, denying the antecedent, circular reasoning) are strictly prohibited.
+- **Proof of necessity (YAGNI):** justify new abstractions or dependencies via proof by contradiction (DISMATH Ch. 06): prove that omitting the abstraction leads to unacceptable failure.
+- **Propositional consistency (SAT):** all agent rules and cross-platform configurations must be mutually satisfiable: $\varphi = R_1 \land R_2 \land \dots \land R_n \not\equiv \mathbf{F}$ (DISMATH Ch. 01–02, 10).
+- **Inductive loop termination:** any repeating or looping skill (such as `/catlazy10-loop`) must define a strictly decreasing Loop Variant $V(i) > 0$ guaranteeing termination in finite steps (DISMATH Ch. 07).
+

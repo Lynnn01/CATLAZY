@@ -1,163 +1,393 @@
 <div align="center">
   <h1>🐈 Catlazy Agent Architecture</h1>
-  <p><strong>The Lazy Senior Dev Philosophy for AI Agents</strong></p>
+  <p><strong>The Lazy Senior Dev Philosophy — Formally Grounded in Discrete Mathematics (DISMATH)</strong></p>
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![AI: Antigravity](https://img.shields.io/badge/AI_Agent-Antigravity-blue.svg)]()
-  [![Paradigm: Lazy](https://img.shields.io/badge/Paradigm-YAGNI-success.svg)]()
+  [![Logic: DISMATH](https://img.shields.io/badge/Logic-DISMATH_Ch.01--10-blueviolet.svg)](docs/logics/dismath/00-overview.md)
+  [![Architecture: Clean_DDD](https://img.shields.io/badge/Architecture-Clean__DDD-success.svg)](docs/architecture/)
 </div>
 
 ---
 
-**Catlazy** is a ready-to-use plugin of architecture, rules, and skills for AI agents such as Antigravity. Its goal is to teach agents **creative laziness**: solve the requested problem directly, avoid redundant work and over-engineering, and use tokens and other resources deliberately.
+## 🧭 Table of Contents
+
+1. [What is Catlazy?](#-what-is-catlazy)
+2. [🧠 DISMATH: The Formal Reasoning Core](#-dismath-the-formal-reasoning-core)
+3. [🛠️ DISMATH × Skill Integration (Ch. 01–10)](#️-dismath--skill-integration-ch-0110)
+4. [🏗️ Project Structure](#️-project-structure)
+5. [🎚️ Operating Modes & Intensity](#️-operating-modes--intensity)
+6. [🌐 Cross-Platform Embedding](#-cross-platform-embedding-catlazy---embed)
+7. [📋 Universal 3-Section Output Format](#-universal-3-section-output-format)
+8. [💡 Practical Workflow Example](#-practical-workflow-example)
+9. [🚀 Installation & Quick Start](#-installation--quick-start)
 
 ---
 
-## 🌟 Why Catlazy? (Concept and Philosophy)
+## 🐱 What is Catlazy?
 
-AI agents often work too hard in the wrong direction: they write speculative code, build layers of abstraction, or add external libraries when a native solution would be enough.
+**Catlazy** is an agent architecture, rule system, and skill suite for AI coding assistants (Google Antigravity, Claude, Cursor, Windsurf, GitHub Copilot). It trains AI agents to operate as **Lazy Senior Developers** — solving problems directly, avoiding speculative complexity, and making every decision traceable back to a formal mathematical argument.
 
-The **Catlazy framework** counters that behavior with three principles:
-
-- **YAGNI (You Aren’t Gonna Need It):** build only what today’s requirement needs.
-- **Deletion before addition:** look for code that can be removed before writing more code.
-- **Native over external:** prefer standard-library and built-in capabilities over unnecessary dependencies.
-
----
-
-## ✨ Key Features
-
-1. **🛡️ Automated guardrails:** control agent behavior through `.rules/AGENTS.md`.
-2. **🔍 Focused audits:** inspect architecture, UI, UX, complexity, technical debt, and agent rules against focused standards.
-3. **🛣️ SDLC workflow:** use skills ordered from 0–10 to guide real development work.
-
----
-
-## 🗂️ Project Structure
-
-The project is intentionally small. Its important directories are:
+**Core operating principle — The Ladder of Laziness:**
 
 ```text
-├── .rules/              # Agent rules
-│   └── AGENTS.md        # Operating instructions for the AI
-├── docs/                # Architecture, design, and logic standards
-│   ├── architecture/    # Clean Architecture, DDD, and Reusable-First Shared Modules
-│   ├── design/          # Unified UI/UX design guidance
-│   └── logics/dismath/  # Discrete Mathematics logic reference
-├── skills/              # Catlazy skills (0–10 SDLC lifecycle)
-│   ├── catlazy/         # Configure the Catlazy intensity
-│   └── catlazy0-help/   # Help and command reference
-└── plugin.json          # Plugin configuration for the AI host
+1. YAGNI        → Does this feature need to exist today?           (Ch.05 Modus Tollens)
+2. Reuse        → Does a solution already exist in shared/?        (Ch.03 Existential ∃)
+3. Stdlib       → Can the standard library solve this?             (Ch.06 Direct Proof)
+4. Native       → Can native platform features handle this?        (Ch.06 Direct Proof)
+5. Dependency   → If a package is needed, pick the leanest.        (Ch.06 Proof by Cases)
+6. One-line     → Can this logic be expressed in one clear line?   (Ch.09 Minimization)
+7. Minimum Impl → Write the smallest code fulfilling requirements. (Ch.08 Hoare {P} S {Q})
 ```
-
-After updating the plugin, reload or reinstall it using your AI host’s process so the host-loaded skills match the repository version.
 
 ---
 
-## 🛠️ Catlazy Skills Workflow (Commands 0–10)
+## 🧠 DISMATH: The Formal Reasoning Core
 
-The skills are ordered along a practical software-development lifecycle:
+Every action, plan, and judgment made by a Catlazy agent is grounded in **Kenneth H. Rosen's Discrete Mathematics (Ch. 01–10)**. This is not decoration — it is the actual formal foundation that governs how agents reason, prove, and make decisions.
 
-| Step | Command | Purpose |
+### Why Formal Logic Matters in AI Agents
+
+Without formal grounding, AI agents reason by pattern-matching: they write code that "looks right" but can't be verified. DISMATH changes this. Every Catlazy skill operates using a precisely defined formal model:
+
+```text
+Plan     →  {P} S {Q}         (Hoare Triple, Ch. 08)
+Review   →  Σ ∪ {¬Q} ⊢ □     (Resolution Refutation, Ch. 10)
+Arch     →  ∀f∈Domain, ∀d∈Imports(f): d ∉ {Infra}   (Predicate, Ch. 03–04)
+Loop     →  V(i) = TARGET – CURRENT ≥ 0 ↓ strictly  (Well-Ordering, Ch. 07)
+YAGNI    →  ¬IsNeeded(F) ∴ ¬Build(F)               (Modus Tollens, Ch. 05)
+```
+
+### DISMATH Curriculum Map
+
+| Chapter | DISMATH Topic | Formal Notation |
 |:---:|---|---|
-| **—** | `/catlazy` | **Configure:** change the main intensity (`lite`, `full`, `ultra`, or `off`). |
-| **0** | `/catlazy0-help` | **Guide:** show Catlazy commands and operating rules. |
-| **1** | `/catlazy1-design` | **Plan:** run a short three-step brainstorm before implementation. |
-| **2** | `/catlazy2-review` | **During work:** review the latest Git diff for over-engineering and rule violations. |
-| **3** | `/catlazy3-architecture` | **Focused audit:** check the repository against `docs/architecture/`. |
-| **4** | `/catlazy4-interface` | **Focused audit:** check UI against the design tokens and interface rules. |
-| **5** | `/catlazy5-experience` | **Focused audit:** check UX, progressive disclosure, and feedback. |
-| **6** | `/catlazy6-audit` | **Repository audit:** find dead code, duplication, and candidates for deletion or consolidation. |
-| **7** | `/catlazy7-debt` | **Debt management:** collect small intentional technical-debt markers (`catlazy:`). |
-| **8** | `/catlazy8-agent` | **System care:** review and simplify the agent rules themselves. |
-| **9** | `/catlazy9-tree` | **Directory mapping:** scan project folder tree and report architecture layer purpose descriptions. |
-| **10** | `/catlazy10-loop` | **Automation:** force continuous execution of a task until validated. |
+| **01** | Propositional Logic | $p, q, \neg p, p \land q, p \lor q, p \to q$ |
+| **02** | Logical Equivalences | $P_{\text{old}} \equiv P_{\text{new}}$, De Morgan, Contrapositive |
+| **03** | Predicate Logic & Quantifiers | $\forall x\, P(x)$, $\exists x\, P(x)$ |
+| **04** | Nested Quantifiers | $\forall f \in D,\, \forall d \in \text{Imports}(f)\, [Q(f,d)]$ |
+| **05** | Rules of Inference | Modus Ponens, Modus Tollens, Resolution |
+| **06** | Methods of Proof | Direct, Contradiction, Contraposition, Vacuous |
+| **07** | Mathematical Induction | $V(i) > 0,\ V(i+1) < V(i)$, Well-Ordering |
+| **08** | Hoare Logic / Program Correctness | $\{P\}\, S\, \{Q\}$, Loop Invariants $\{I\}$ |
+| **09** | Boolean Algebra & Minimization | De Morgan, Absorption, DNF/CNF simplification |
+| **10** | SAT Modeling & Resolution Refutation | $\varphi \not\equiv \mathbf{F}$, Resolution $\frac{p \lor q,\ \neg p \lor r}{q \lor r}$ |
 
-You can type `/catlazy`, `/catlazy off`, or `/catlazy ultra` at any time to change the main operating mode. `lite` reviews the final diff and states missing checks; `full` adds approved scope, current validation evidence, and a finish status; `ultra` adds hollow review and critical negative-path validation. Fault probes remain optional and must be approved and isolated from a live dirty worktree.
-
-### Task-scoped reviews
-
-Use Catlazy reviews with an explicit task context when the worktree is dirty:
-
-```text
-/catlazy2-review report --scope ui --base origin/main --files src/features/screener
-/catlazy2-review fix-safe --scope ui --files src/features/screener --format normal
-```
-
-`report` only reports findings. `fix-safe` may repair small, local, low-risk findings in the selected files and then reviews them again. It never auto-changes migrations, dependencies, generated files, authentication, public contracts, or files outside scope.
-
-For a task that spans several messages, copy `.catlazy/task.json.example` to `.catlazy/task.json` and set its baseline, scope, files, report format, and validation profile. After user approval, `files` is the approved write scope: Catlazy may read elsewhere for discovery, but it stops and asks before writing another path. The manifest is optional and must not turn unrelated dirty worktree files into task output.
-
-Validation profiles are selected from the task context after Catlazy discovers the project’s real scripts: `ui` runs relevant typecheck and lint, `backend` adds tests and build, `api` adds contract/type checks, and `full` runs all applicable checks. Catlazy reports missing scripts instead of guessing commands.
-
-The optional `evidence` array keeps short validation records using `profile`, `command`, `exitStatus`, and ISO-8601 `ranAt`. Evidence is current only when it was recorded after the last relevant edit; later changes require rerunning only the affected profile.
-
-### Catlazy finish contract
-
-Before reporting completion, Catlazy checks the approved scope, applicable validation, evidence freshness, final diff, generated files, and unresolved P1/P2 findings:
-
-```text
-🐈 Scope       PASS
-🐈 Validation  PASS
-🐈 Freshness   PASS
-🐈 Diff        PASS
-🐈 Generated   PASS
-🐈 P1/P2       PASS
-CATLAZY_DONE
-```
-
-If an external dependency or decision prevents completion, it reports `CATLAZY_BLOCKED: <reason>`. If required evidence is missing, stale, unavailable, or failing, it reports `CATLAZY_UNVERIFIED: <missing check>`. Catlazy rules and skills are workflow guardrails, not filesystem enforcement, so the final diff remains the source of truth for scope.
-
-In `ultra`, `catlazy2-review` also checks for completion-shaped placeholders such as required `TODO` markers, empty handlers, fake success responses, inactive UI controls, meaningless skipped tests, and production mock data. Optional fault probes are reserved for critical calculations, financial logic, authorization, parsers, validators, and regression fixes.
+📖 Full reference: [`docs/logics/dismath/00-overview.md`](docs/logics/dismath/00-overview.md)  
+🔗 Integration bridge: [`docs/logics/dismath/11-catlazy-formal-methods.md`](docs/logics/dismath/11-catlazy-formal-methods.md)
 
 ---
 
-## 🔁 Incremental Decision Trail
+## 🛠️ DISMATH × Skill Integration (Ch. 01–10)
 
-For complex, ambiguous, or multi-file work, Catlazy proceeds one issue at a time: **Observe → Decide → Plan → Apply → Verify → Continue**. It shows concise evidence and decisions without requesting or revealing private chain-of-thought.
-
-Small, clear work uses only **Plan → Apply → Verify** so the process does not add unnecessary overhead.
+Each Catlazy skill maps directly to one or more DISMATH chapters. Below is the authoritative mapping:
 
 ---
 
-## 🚀 Quick Start
+### `/catlazy` — Configure Intensity & Embed
 
-### 1. Prerequisite
+**DISMATH Ch. 01–02:** Propositional Logic & Logical Equivalences
 
-Use an AI agent framework such as Antigravity that supports a plugin or skills directory.
+The mode configuration system checks that the selected rule set is **satisfiable** (not contradictory) before activating. The `--embed` command applies logical equivalence checks across platform rule files to guarantee consistent behavior.
 
-### 2. Environment Variables
+```text
+Formal Check: φ_rules ≢ F  (Rule set is SAT — Ch. 01)
+Equivalence:  rules_A ≡ rules_B across Claude / Cursor / Windsurf  (Ch. 02)
+```
 
-Copy `.env.example` to `.env` and provide your API keys:
+---
+
+### `/catlazy0-help` — Quick Reference Guide
+
+**DISMATH Ch. 01:** Propositional Logic (Reference)
+
+Provides a complete, unambiguous propositional specification of all commands, intensity levels, and operating rules — ensuring agents receive logically consistent instructions.
+
+---
+
+### `/catlazy1-design` — Brainstorm & Plan with Hoare Triples
+
+**DISMATH Ch. 05 (Modus Tollens), Ch. 06 (Proof by Contradiction), Ch. 08 (Hoare Logic)**
+
+Before any code is written, this skill runs a **3-step interview gate** grounded in formal logic:
+
+1. **YAGNI Filter (Modus Tollens — Ch. 05):**
+
+   $$\text{Premise 1: } \text{IsNeeded}(F) \implies \text{Build}(F)$$
+   $$\text{Premise 2: } \neg\text{IsNeeded}(F)$$
+   $$\therefore\; \neg\text{Build}(F) \quad (\text{Modus Tollens})$$
+
+2. **Necessity Proof (Proof by Contradiction — Ch. 06):**  
+   To justify a new abstraction $A$, prove that $\neg A \implies \text{Failure}$ (achieving the goal without $A$ is impossible).
+
+3. **Hoare Plan Generation (Ch. 08):**  
+   Output a formal plan as: $\{P\}\, S\, \{Q\}$ saved to `docs/plans/YYYY-MM-DD-*.md`.
+   
+   | Component | Meaning |
+   |---|---|
+   | **Pre-condition $P$** | Current verified state of the codebase before changes |
+   | **Statement $S$** | Minimal, approved sequence of atomic modifications |
+   | **Post-condition $Q$** | Verifiable assertions that must hold after $S$ |
+   | **Invariant $I$** | Architecture boundaries & safety constraints that never break |
+
+   $$\{P \land I\}\, S\, \{Q \land I\}$$
+
+---
+
+### `/catlazy2-review` — Diff Review by Resolution Refutation
+
+**DISMATH Ch. 05 (Rules of Inference), Ch. 06 (Proof Methods), Ch. 08 (Hoare Diffs), Ch. 10 (Resolution)**
+
+Given a Git diff $\Delta$, the agent constructs a knowledge base $\Sigma = \{I, P, \Delta\}$ and verifies correctness by Resolution Refutation:
+
+$$\text{Assume negation: } \neg Q$$
+$$\text{Apply Resolution: } \frac{p \lor q,\quad \neg p \lor r}{q \lor r}$$
+$$\text{If } \Sigma \cup \{\neg Q\} \vdash \Box\; (\text{contradiction}), \text{ then } \Delta \text{ is correct.}$$
+
+**Fallacy Guard (Ch. 05):** The reviewer is explicitly forbidden from all 4 informal fallacies:
+- **Affirming the Consequent** ($p \to q, q \vdash p$): "It uses Clean Architecture → it must be correct."
+- **Denying the Antecedent** ($p \to q, \neg p \vdash \neg q$): "Without Redis → the task is impossible."
+- **Circular Reasoning / Begging the Question** ($p \vdash p$): "It's over-engineered because it has too much engineering."
+- **False Dilemma** ($p \lor q$ when $\exists r$): "We must rewrite entirely or leave the bug." (Missing: targeted one-line patch.)
+
+**Hollow Implementation Detection (Ch. 06 — Vacuous Proof guard):**  
+`TODO` stubs, fake returns, and empty handlers are flagged as vacuously true (trivially passing) code — a proof technique that proves nothing meaningful.
+
+---
+
+### `/catlazy3-architecture` — Layer Invariant Audit
+
+**DISMATH Ch. 03 (Predicate Logic), Ch. 04 (Nested Quantifiers)**
+
+Architecture compliance is defined as a **universally quantified predicate** over all source files:
+
+$$\text{Inv}_{\text{Domain}}: \forall f \in U,\; [\text{Layer}(f) = \text{Domain}] \implies \forall d \in \text{Imports}(f)\; [\text{Layer}(d) \notin \{\text{Infra}, \text{Pres}\}]$$
+
+$$\text{Inv}_{\text{Pres}}: \forall f \in U,\; [\text{Layer}(f) = \text{Pres}] \implies \forall d \in \text{Imports}(f)\; [\text{Layer}(d) \neq \text{Infra}]$$
+
+An **architecture violation** is a formal **counterexample** that falsifies the predicate:
+
+$$\exists f \in \text{Domain},\; \exists d \in \text{Imports}(f): \text{Layer}(d) = \text{Infra} \implies \texttt{[arch-leak]}$$
+
+---
+
+### `/catlazy4-interface` — UI State Completeness Audit
+
+**DISMATH Ch. 01 (Propositional Logic), Ch. 02 (Logical Equivalences)**
+
+UI states are modeled as propositions. For each interactive control, the audit checks that all required state propositions are satisfied:
+
+$$\text{Button}(B) \implies (\text{hasLoading}(B) \land \text{hasDisabled}(B) \land \text{hasAriaLabel}(B))$$
+
+A UI finding ($\texttt{[ui-silent]}$, $\texttt{[ui-contrast]}$) is a **falsified propositional constraint** — the conjunction fails for some component.
+
+---
+
+### `/catlazy5-experience` — UX Flow Audit
+
+**DISMATH Ch. 01 (Propositional Logic), Ch. 02 (Logical Equivalences)**
+
+UX interactions are validated as propositional state completeness rules:
+
+$$\text{AsyncAction}(A) \implies (\text{hasSkeleton}(A) \lor \text{hasSpinner}(A)) \land \text{hasEmptyState}(A) \land \text{hasErrorState}(A)$$
+
+Any $\texttt{[ux-silent]}$ finding means a user-visible state transition is undefined — an incomplete truth table for the component's behavior.
+
+---
+
+### `/catlazy6-audit` — Dead Code & Duplication Audit
+
+**DISMATH Ch. 09 (Boolean Minimization), Ch. 10 (SAT Reachability)**
+
+Dead code detection uses **SAT reachability**: if a code path $P$ cannot be reached by any satisfying assignment of program inputs, it is unreachable and safe to delete:
+
+$$\nexists\, \vec{x}: \text{Reach}(P, \vec{x}) \equiv \mathbf{T} \implies P \text{ is dead code}$$
+
+Duplication is reduced using **Boolean Absorption** (Ch. 09):
+
+$$A \lor (A \land B) \equiv A \quad \text{(absorb redundant condition)}$$
+
+---
+
+### `/catlazy7-debt` — Technical Debt Ledger
+
+**DISMATH Ch. 07 (Mathematical Induction), Ch. 06 (Vacuous Proof), Ch. 08 (Deferred Hoare)**
+
+Each `catlazy:` marker defines an **inductively bounded state** with a trigger condition:
+
+```text
+catlazy: <simplification> | ceiling: <limit> | upgrade: <trigger>
+```
+
+- **Base Case $C_0$:** Simplification holds while $x \le C_0$.
+- **Inductive Step:** When $x > C_k$, the `upgrade:` trigger fires, escalating to the full implementation.
+- **Vacuous Safety:** If $x \le C_0$ is guaranteed for the system's entire lifecycle, the deferral is **vacuously safe** ($P \to Q \equiv \mathbf{T}$ when $P$ is always false).
+
+---
+
+### `/catlazy8-agent` — Agent Rules SAT Audit
+
+**DISMATH Ch. 01–02 (SAT Consistency), Ch. 05 (Entailment)**
+
+The agent rule file (`.rules/AGENTS.md`) is audited for logical consistency:
+
+$$\text{Requirement: } \varphi_{\text{rules}} \not\equiv \mathbf{F} \quad \text{(rules must be satisfiable)}$$
+
+If two rules $R_1$ and $R_2$ entail a contradiction ($R_1 \land R_2 \equiv \mathbf{F}$), the conflicting pair is flagged as `[rule-conflict]`. Redundant rules where $R_1 \vdash R_2$ (R2 is entailed by R1) are flagged as `[rule-redundant]`.
+
+---
+
+### `/catlazy9-tree` — Architecture Tree Scanner
+
+**DISMATH Ch. 03 (Predicate Logic — Classification)**
+
+Each directory is classified by applying the predicate function $\text{Layer}: U \to L$:
+
+$$\forall d \in \text{Dirs}:\; \text{Layer}(d) \in \{\text{Domain}, \text{Application}, \text{Infra}, \text{Presentation}, \text{Shared}, \text{Config}\}$$
+
+Directories that cannot be classified are flagged as `[unclassified]` — a gap in the predicate's domain.
+
+---
+
+### `/catlazy10-loop` — Continuous Loop with Termination Proof
+
+**DISMATH Ch. 07 (Mathematical Induction & Well-Ordering)**
+
+The continuous loop is formally guaranteed to terminate via a **Well-Ordering Loop Variant**:
+
+$$V(i) = \text{TARGET\_COUNTER} - \text{CURRENT\_COUNTER},\quad V(i) \in \mathbb{N}$$
+
+- $V(0) = \text{TARGET\_COUNTER} > 0$
+- On each clean (no-findings) iteration: $V(i+1) = V(i) - 1 \quad (\text{strictly decreasing})$
+- On each findings iteration: $\text{CURRENT\_COUNTER} \leftarrow 0,\; V$ resets (reset is permitted by the variant — only net progress increments it)
+- **By the Well-Ordering Property of** $\mathbb{N}$: $V(i)$ must reach 0 in finite steps
+
+The loop also maintains the **Hoare Loop Invariant** (Ch. 08):
+
+$$\{I:\; \text{TaskInvariantsSatisfied} \land 0 \le \text{CURRENT\_COUNTER} \le \text{TARGET\_COUNTER}\}$$
+
+---
+
+## 🏗️ Project Structure
+
+```text
+├── .rules/              # Agent operating rules & guardrails
+│   └── AGENTS.md        # Canonical operating instructions (SAT-consistent, Ch.01)
+├── docs/
+│   ├── architecture/    # Clean Architecture + Reusable-First (predicate invariants, Ch.03–04)
+│   ├── design/          # UI tokens + UX interaction rules (propositional, Ch.01–02)
+│   ├── logics/dismath/  # DISMATH formal reasoning (Ch.01–10 + integration bridge Ch.11)
+│   └── plans/           # Hoare-Triple implementation plans {P} S {Q} (Ch.08)
+├── skills/              # Catlazy SDLC skills (0–10)
+│   ├── catlazy/         # Intensity configuration & cross-platform embed
+│   ├── catlazy0-help/   # Reference guide
+│   ├── catlazy1-design/ # YAGNI gate + Hoare planning (Ch.05,06,08)
+│   ├── catlazy2-review/ # Resolution refutation diff review (Ch.05,06,08,10)
+│   ├── catlazy3-architecture/ # Predicate layer invariant audit (Ch.03,04)
+│   ├── catlazy4-interface/    # Propositional UI state audit (Ch.01,02)
+│   ├── catlazy5-experience/   # UX state completeness audit (Ch.01,02)
+│   ├── catlazy6-audit/        # SAT reachability + Boolean minimization (Ch.09,10)
+│   ├── catlazy7-debt/         # Inductive debt bounds + vacuous safety (Ch.06,07,08)
+│   ├── catlazy8-agent/        # Rule SAT consistency + entailment (Ch.01,02,05)
+│   ├── catlazy9-tree/         # Predicate layer classification (Ch.03)
+│   └── catlazy10-loop/        # Well-Ordering termination loop (Ch.07,08)
+└── plugin.json          # Plugin manifest for host AI environments
+```
+
+---
+
+## 🎚️ Operating Modes & Intensity
+
+| Mode | Behavior |
+|---|---|
+| **`lite`** | Review final diff; report missing checks. |
+| **`full`** *(Default)* | Approved write scopes, validation evidence, freshness tracking, finish contracts. |
+| **`ultra`** | Full + hollow implementation detection (vacuous proofs, fake returns, TODO stubs) and negative-path validation for critical logic. |
+| **`off`** | Disable extra workflows; preserve core safety boundaries. |
+
+---
+
+## 🌐 Cross-Platform Embedding (`/catlazy --embed`)
+
+```text
+/catlazy --embed
+```
+
+Injects the standard Catlazy guardrail snippet into all AI host environments:
+
+| Platform | Target File |
+|---|---|
+| **Google Antigravity** | `.rules/AGENTS.md` |
+| **Anthropic Claude** | `CLAUDE.md` |
+| **Cursor IDE** | `.cursorrules` & `.cursor/rules/catlazy.mdc` |
+| **Windsurf (Cascade)** | `.windsurfrules` |
+| **GitHub Copilot** | `.github/copilot-instructions.md` |
+| **OpenAI Codex** | `AGENTS.md` |
+
+---
+
+## 📋 Universal 3-Section Output Format
+
+```markdown
+### 🔎 Inspection Summary
+- **Target / Scope:** Mode, baseline, and file scope.
+- **Standards Source:** docs/ or bundled fallback.
+- **Observation:** Concise factual findings.
+
+### 📋 Inspection Checklist
+- `[PASS]` / `[FAIL]` / `[N/A]` `[tag]` Description
+  - **Target:** `file:line`
+  - **Evidence:** Observed behavior
+  - **Smallest Fix:** Minimal non-overengineered remediation
+
+### 🐈 Catlazy Finish Check
+- **Scope & Safety:** [PASS]
+- **Validation & Freshness:** [PASS]
+- **Diff & Side-effects:** [PASS]
+- **Terminal Status:** `CATLAZY_DONE` | `CATLAZY_BLOCKED: <reason>` | `CATLAZY_UNVERIFIED: <check>`
+```
+
+---
+
+## 💡 Practical Workflow Example
+
+```text
+1. /catlazy1-design "Add JWT authentication"
+   → YAGNI check:  ¬IsNeeded today? → stop (Modus Tollens)
+   → YAGNI passes: Proof by contradiction: ¬JWT → auth impossible
+   → Plan saved:   docs/plans/2026-01-01-jwt-auth.md  {P} S {Q}
+
+2. Implement within approved scope
+   → Write code in src/domain/, src/application/, src/shared/ only
+
+3. /catlazy2-review report
+   → Resolution refutation:  Σ ∪ {¬Q} ⊢ □ → diff is sound
+   → Fallacy guard:  no affirming-the-consequent reasoning
+   → Invariants: ∀f∈Domain, Imports(f) ∩ Infra = ∅ ✓
+
+4. /catlazy3-architecture
+   → Predicate scan: no arch-leak counterexample found
+   → CATLAZY_DONE 🐈💤
+```
+
+---
+
+## 🚀 Installation & Quick Start
 
 ```bash
-cp .env.example .env
+# Clone into Antigravity plugin directory
+git clone https://github.com/Lynnn01/CATLAZY.git ~/.gemini/config/plugins/CATLAZY
 ```
 
----
-
-## 💡 Usage Examples
-
-**Example 1: Before a large feature**
-
-> **User:** `/catlazy1-design` I need a shopping cart with Redis.
->
-> **Agent:** “Do we need Redis today? Could a simple in-memory store or session meet the current requirement with less complexity?”
-
-**Example 2: Architecture check**
-
-> **User:** `/catlazy3-architecture` Please check the project.
->
-> **Agent:** “Found `[arch-bypass]` in `CartController.ts`: it calls the database directly instead of going through the Application Layer use case.”
-
-**Example 3: UX check**
-
-> **User:** `/catlazy5-experience`
->
-> **Agent:** “Found `[ux-silent]` in `Login.tsx`: the submit button has no loading state, so users may submit twice.”
+Then in your AI chat session:
+```text
+/catlazy0-help    → View all commands and operating rules
+/catlazy          → Confirm current operating mode
+/catlazy --embed  → Inject rules into your project files
+```
 
 ---
 
 <div align="center">
-  <p><i>More laziness, shorter code, fewer bugs. 🐈💤</i></p>
+  <p><i>Write less. Prove more. Reason formally. 🐈💤</i></p>
 </div>

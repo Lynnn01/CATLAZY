@@ -15,6 +15,13 @@ Inspect the entire repository for dead code, duplication, unnecessary dependenci
 5. Never recommend deleting security, accessibility, data-loss handling, tests, or required architecture layers merely to reduce line count.
 6. Classify findings as deletion, consolidation into central `shared/` modules, reuse, dependency removal, or intentional complexity.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Audit reasoning against over-engineering is mathematically grounded in:
+- **Ch. 10 (SAT Modeling & Satisfiability):** Dead code detection is a call-graph reachability problem. A code block $B$ is dead iff the conjunction of execution predicates reaching $B$ is unsatisfiable ($\varphi_{\text{reach}}(B) \equiv \mathbf{F}$) $\implies [audit\text{-}deadcode]$. Reference: [`docs/logics/dismath/10-puzzle-solving-and-sat-modeling.md`](../../docs/logics/dismath/10-puzzle-solving-and-sat-modeling.md).
+- **Ch. 09 (Boolean Algebra & Logic Minimization):** Complex conditional branching that can be reduced to simpler equivalent expressions via De Morgan, Absorption ($x \lor (x \land y) = x$), or Idempotence should be simplified $\implies [audit\text{-}arch]$. Reference: [`docs/logics/dismath/09-boolean-algebra-and-combinatorial-circuits.md`](../../docs/logics/dismath/09-boolean-algebra-and-combinatorial-circuits.md).
+- **Ch. 07 (Mathematical Induction):** Transitive dead dependency analysis: base case: zero direct callers $\implies$ candidate; inductive step: all callers are dead $\implies$ whole dependency subtree is dead. Reference: [`docs/logics/dismath/07-mathematical-induction-and-recursion.md`](../../docs/logics/dismath/07-mathematical-induction-and-recursion.md).
+
 ### Task Context and Approved Changes
 
 Accept standardized input arguments:

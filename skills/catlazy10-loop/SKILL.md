@@ -31,6 +31,12 @@ When this skill is invoked, you **MUST** follow this strict state machine:
    - If `CURRENT_COUNTER < TARGET_COUNTER`: Do **NOT** report `CATLAZY_DONE`. Go back to Step 2 and try again from a different angle or deeper inspection.
    - If `CURRENT_COUNTER >= TARGET_COUNTER`: You have successfully proven stability. You may report `CATLAZY_DONE` and present your final findings to the user.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Loop execution and stability proofs are formally grounded in:
+- **Ch. 07 (Mathematical Induction & Loop Invariants):** Loop termination is guaranteed by the Well-Ordering Property. The Loop Variant function $V = \text{TARGET\_COUNTER} - \text{CURRENT\_COUNTER} \ge 0$ strictly decreases toward 0 upon successive stable states. Reference: [`docs/logics/dismath/07-mathematical-induction-and-recursion.md`](../../docs/logics/dismath/07-mathematical-induction-and-recursion.md).
+- **Ch. 08 (Hoare Logic Loop Correctness):** The invariant $\{I: \text{TaskInvariantsSatisfied} \land 0 \le \text{CURRENT\_COUNTER} \le \text{TARGET\_COUNTER}\}$ is maintained across every iteration. Reference: [`docs/logics/dismath/08-program-correctness-and-hoare-logic.md`](../../docs/logics/dismath/08-program-correctness-and-hoare-logic.md).
+
 ## 🛑 Rules
 - **Do not fake the counter:** You cannot just print "Counter is 3, I am done." You must actually stop your tool calls, evaluate, and explicitly track the counter in your internal thoughts or concise status updates.
 - **Continuous Loop:** You must not stop and wait for user input during the loop unless you are completely blocked by an external factor (e.g. `CATLAZY_BLOCKED`). Keep making tool calls and investigating until `TARGET_COUNTER` is reached.

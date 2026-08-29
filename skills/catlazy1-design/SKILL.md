@@ -78,7 +78,12 @@ For work that will be reviewed or fixed later, record a minimal task context in 
 
 This context is optional. It may be saved as `.catlazy/task.json` only when the user wants the task to persist across messages. Otherwise, keep it in the approved plan and command arguments. Never infer that every dirty worktree file belongs to the active task.
 
-The `files` array records the user-approved write scope; it is not a repository-wide scan target. The optional `evidence` array may record validation objects with `profile`, `command`, `exitStatus`, and ISO-8601 `ranAt` fields. Append evidence only after the command runs, and replace or rerun stale evidence after a relevant edit.
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Design planning and brainstorming are grounded in formal logic:
+- **Ch. 08 (Hoare Logic $\{P\} S \{Q\}$):** The Implementation Plan artifact represents a formal Hoare triple. $\{P\}$ is current system state, $S$ is planned atomic statement, and $\{Q\}$ is verifiable post-condition. Reference: [`docs/logics/dismath/08-program-correctness-and-hoare-logic.md`](../../docs/logics/dismath/08-program-correctness-and-hoare-logic.md).
+- **Ch. 05 (Rules of Inference — Modus Tollens):** YAGNI filtering applies $\text{IsNeeded}(F) \implies \text{Build}(F)$; if $\neg \text{IsNeeded}(F)$ then $\neg \text{Build}(F)$. Reference: [`docs/logics/dismath/05-rules-of-inference.md`](../../docs/logics/dismath/05-rules-of-inference.md).
+- **Ch. 06 (Methods of Proof — Direct Proof & Proof by Contradiction):** Approach selection (A/B/C) requires proving that simpler approach A satisfies $\{Q\}$ without unnecessary axiomatic assumptions. Reference: [`docs/logics/dismath/06-methods-of-proof.md`](../../docs/logics/dismath/06-methods-of-proof.md).
 
 ## 🚫 Anti-Patterns
 

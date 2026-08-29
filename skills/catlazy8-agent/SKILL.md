@@ -15,6 +15,13 @@ Review `.rules/AGENTS.md` and related project rules for duplication, contradicti
 5. When approved, update the rule files, preserve safety/security/accessibility requirements, and verify every referenced path.
 6. Record what changed and run a final consistency check.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Rule verification and simplification are formally grounded in:
+- **Ch. 01–02 (Propositional Logic & Equivalences):** Rule set consistency is a Boolean Satisfiability problem. Two rules $R_A, R_B$ create a conflict iff $R_A \land R_B \equiv \mathbf{F} \implies [rule\text{-}conflict]$. Reference: [`docs/logics/dismath/01-propositional-logic.md`](../../docs/logics/dismath/01-propositional-logic.md), [`02-logical-equivalences.md`](../../docs/logics/dismath/02-logical-equivalences.md).
+- **Ch. 05 (Entailment & Redundancy):** A rule $R_B$ is duplicate/redundant if it is logically entailed by an existing rule $R_A$ ($R_A \vdash R_B$) $\implies [rule\text{-}duplication]$. Reference: [`docs/logics/dismath/05-rules-of-inference.md`](../../docs/logics/dismath/05-rules-of-inference.md).
+- **Ch. 06 (Methods of Proof — Proof of Necessity):** Every rule $R$ must satisfy necessity: $\neg R \implies \exists \text{ FailureMode}$. Reference: [`docs/logics/dismath/06-methods-of-proof.md`](../../docs/logics/dismath/06-methods-of-proof.md).
+
 ### Task Context and Approved Changes
 
 Accept standardized input arguments:

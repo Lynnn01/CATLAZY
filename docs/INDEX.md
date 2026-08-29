@@ -36,7 +36,7 @@ Documentation of coding DNA, domain algorithms, mathematical modeling, defensive
 
 | Profile | Main coverage |
 |---|---|
-| [dismath/](./logics/dismath/00-overview.md) | Discrete Mathematics logic curriculum (Kenneth Rosen): Propositional logic, Equivalences, Predicates, Quantifiers, Rules of Inference, Proof Methods, Mathematical Induction, Hoare Logic, Boolean Circuits, SAT Modeling, and [Catlazy Formal Methods Tooling](./logics/dismath/11-catlazy-formal-methods.md) |
+| [dismath/](./logics/dismath/00-overview.md) | Discrete Mathematics formal reasoning core (Kenneth Rosen): Propositional logic, Equivalences, Predicates, Quantifiers, Rules of Inference, Proof Methods, Mathematical Induction, Hoare Logic, Boolean Circuits, SAT Modeling, and [Catlazy Formal Methods](./logics/dismath/11-catlazy-formal-methods.md) |
 
 
 

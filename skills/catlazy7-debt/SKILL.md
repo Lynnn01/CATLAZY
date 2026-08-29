@@ -13,6 +13,12 @@ Scan the repository for intentional `catlazy:` comments and maintain a concise d
 3. Report file, line, simplification, current ceiling, and upgrade trigger.
 4. Do not edit production code while collecting debt. Ask for approval before changing or removing a marker.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Technical debt tracking is formally grounded in:
+- **Ch. 08 (Hoare Triples on Deferred State):** A debt marker represents $\{P: \text{input} \le \text{ceiling}\} \, S_{\text{simplified}} \, \{Q\}$. When $\text{input} > \text{ceiling}$, the post-condition $\{Q\}$ is no longer guaranteed, triggering the $\{S_{\text{upgrade}}\}$ statement. Reference: [`docs/logics/dismath/08-program-correctness-and-hoare-logic.md`](../../docs/logics/dismath/08-program-correctness-and-hoare-logic.md).
+- **Ch. 06 (Vacuous Proof for Infinite Deferrals):** If the operational boundary guarantees that $\text{input} \le \text{ceiling}$ is invariant for the entire system lifecycle, paying down the debt is vacuously unnecessary ($P \to Q \equiv \mathbf{T}$). Reference: [`docs/logics/dismath/06-methods-of-proof.md`](../../docs/logics/dismath/06-methods-of-proof.md).
+
 ### Task Context and Approved Changes
 
 Accept standardized input arguments:

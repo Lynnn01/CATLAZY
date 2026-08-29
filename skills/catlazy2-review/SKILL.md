@@ -75,6 +75,14 @@ Inspect task-introduced code for completion-shaped placeholders. Search heuristi
 
 Do not flag intentional framework hooks, documented Catlazy deferrals, test doubles confined to tests, or unrelated pre-existing code. A hollow implementation that prevents the requested behavior from working is at least P2 and prevents `CATLAZY_DONE`.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+Code review reasoning is formally grounded in:
+- **Ch. 08 (Hoare Logic Correctness $\{P\} \Delta \{Q\}$):** Reviewing a diff $\Delta$ verifies that given verified pre-state $\{P\}$, applying $\Delta$ yields post-state $\{Q\}$ satisfying the task contract while preserving invariants $\{I\}$. Reference: [`docs/logics/dismath/08-program-correctness-and-hoare-logic.md`](../../docs/logics/dismath/08-program-correctness-and-hoare-logic.md).
+- **Ch. 06 (Methods of Proof — Proof by Contradiction):** Hollow implementation detection is a formal proof by contradiction ($p \land \neg q \to \mathbf{F}$): assume the feature is complete; observe non-operational `TODO`/fake data; derive contradiction $\implies$ implementation is incomplete. Reference: [`docs/logics/dismath/06-methods-of-proof.md`](../../docs/logics/dismath/06-methods-of-proof.md).
+- **Ch. 02 (Logical Equivalences):** Refactoring checks verify equivalence: $f_{\text{refactored}}(x) \equiv f_{\text{original}}(x)$. Reference: [`docs/logics/dismath/02-logical-equivalences.md`](../../docs/logics/dismath/02-logical-equivalences.md).
+- **Ch. 05 (Rules of Inference — Fallacy Guard):** Review findings must cite direct evidence. Never flag over-engineering by affirming the consequent without observing tangible unnecessary complexity. Reference: [`docs/logics/dismath/05-rules-of-inference.md`](../../docs/logics/dismath/05-rules-of-inference.md).
+
 ### Catlazy Finish Contract
 
 Use one final status for the resolved task:

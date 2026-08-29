@@ -17,6 +17,11 @@ When invoked with `/catlazy4-interface`, inspect all UI and frontend code agains
    - `[ui-motion]`: animation longer than 300ms, purposeless motion, or no `prefers-reduced-motion` support.
    - `[ui-spacing]`: cramped layout or spacing that violates the project grid.
 
+### 📐 Formal Basis (DISMATH Reasoning Foundation)
+
+UI compliance auditing is mathematically grounded in:
+- **Ch. 01–02 (Propositional Logic & Equivalence Constraints):** UI components are evaluated against a system of propositional constraints $\Phi_{\text{UI}} = C_{\text{color}} \land C_{\text{layout}} \land C_{\text{a11y}} \land C_{\text{motion}} \land C_{\text{spacing}}$. Any false clause ($\neg C_i$) yields a formal violation tag (`[ui-*]`). Reference: [`docs/logics/dismath/01-propositional-logic.md`](../../docs/logics/dismath/01-propositional-logic.md), [`02-logical-equivalences.md`](../../docs/logics/dismath/02-logical-equivalences.md).
+
 ### Standards Resolution
 
 Resolve `docs/design/user_interface/` in this order before auditing:

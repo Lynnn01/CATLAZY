@@ -37,6 +37,14 @@ Display the one-shot quick reference for `catlazy`.
 - **`/catlazy9-tree`:** scan project directory structure and report an annotated folder tree with purpose descriptions.
 - **`/catlazy10-loop`:** force the agent to continuously execute a task until validated multiple times without findings.
 
+### 🧠 Formal Logic Foundation (DISMATH)
+
+All skills and planning are mathematically grounded in Discrete Mathematics (`docs/logics/dismath/`):
+- **Planning:** Hoare Triples $\{P\} S \{Q\}$ (Ch. 08) & YAGNI Modus Tollens (Ch. 05)
+- **Architecture:** Predicate Logic $\forall f, \forall d$ (Ch. 03–04) & Transitive Syllogism
+- **Review & Diff:** Resolution Refutation & Proof by Contradiction (Ch. 05, 06, 10)
+- **Debt & Loop:** Inductive Sequences, Well-Ordering, and Loop Variants $V(i)$ (Ch. 07)
+
 ### ⚙️ Stop and Configure
 
 - **Stop:** type `stop catlazy`, `normal mode`, or `/catlazy off`.
