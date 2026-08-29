@@ -18,7 +18,6 @@ This documentation provides a comprehensive, rigorous reference for **Mathematic
 | 08 | [`08-program-correctness-and-hoare-logic.md`](./08-program-correctness-and-hoare-logic.md) | **Program Correctness & Hoare Logic:** Hoare triples $\{P\} S \{Q\}$, pre/post-conditions, assignment rule, composition rule, conditional rule, and loop invariants (initialization, maintenance, termination). |
 | 09 | [`09-boolean-algebra-and-combinatorial-circuits.md`](./09-boolean-algebra-and-combinatorial-circuits.md) | **Boolean Algebra & Digital Circuits:** Huntington postulates, duality principle, canonical forms (DNF/CNF), functional completeness (NAND/NOR), logic gates, and half/full adders. |
 | 10 | [`10-puzzle-solving-and-sat-modeling.md`](./10-puzzle-solving-and-sat-modeling.md) | **Logic Puzzles & SAT Modeling:** Smullyan's Knights and Knaves biconditional modeling, Boolean satisfiability (SAT / 3-SAT NP-completeness), and resolution refutation theorem proving. |
-| 11 | [`11-catlazy-formal-methods.md`](./11-catlazy-formal-methods.md) | **Catlazy Formal Methods:** DISMATH application to automated verification tooling (`tools/formal/`), mapping chapters 01–10 to invariant checking, rule SAT consistency, Hoare planning, and resolution diff refutation. |
 
 ---
 

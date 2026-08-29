@@ -43,13 +43,10 @@ The project is intentionally small. Its important directories are:
 ├── docs/                # Architecture, design, and logic standards
 │   ├── architecture/    # Clean Architecture, DDD, and Reusable-First Shared Modules
 │   ├── design/          # Unified UI/UX design guidance
-│   └── logics/dismath/  # Discrete Mathematics logic & Catlazy Formal Methods
+│   └── logics/dismath/  # Discrete Mathematics logic reference
 ├── skills/              # Catlazy skills (0–10 SDLC lifecycle)
 │   ├── catlazy/         # Configure the Catlazy intensity
 │   └── catlazy0-help/   # Help and command reference
-├── tools/               # Catlazy Formal Engine (DISMATH automated verification)
-│   ├── formal/          # Invariant, SAT, Hoare, and Resolution modules
-│   └── run_formal_engine.py # CLI runner for all formal checks
 └── plugin.json          # Plugin configuration for the AI host
 ```
 
