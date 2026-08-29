@@ -34,8 +34,8 @@ When this skill is invoked, you **MUST** follow this strict state machine:
 ### 📐 Formal Basis (DISMATH Reasoning Foundation)
 
 Loop execution and stability proofs are formally grounded in:
-- **Ch. 07 (Mathematical Induction & Loop Invariants):** Loop termination is guaranteed by the Well-Ordering Property. The Loop Variant function $V = \text{TARGET\_COUNTER} - \text{CURRENT\_COUNTER} \ge 0$ strictly decreases toward 0 upon successive stable states. Reference: [`docs/logics/dismath/07-mathematical-induction-and-recursion.md`](../../docs/logics/dismath/07-mathematical-induction-and-recursion.md).
-- **Ch. 08 (Hoare Logic Loop Correctness):** The invariant $\{I: \text{TaskInvariantsSatisfied} \land 0 \le \text{CURRENT\_COUNTER} \le \text{TARGET\_COUNTER}\}$ is maintained across every iteration. Reference: [`docs/logics/dismath/08-program-correctness-and-hoare-logic.md`](../../docs/logics/dismath/08-program-correctness-and-hoare-logic.md).
+- **Ch. 07 (Mathematical Induction & Loop Invariants):** Loop termination is guaranteed by the Well-Ordering Property. The Loop Variant function $V = \text{TargetCounter} - \text{CurrentCounter} \ge 0$ strictly decreases toward 0 upon successive stable states. Reference: [`docs/logics/dismath/07-mathematical-induction-and-recursion.md`](../../docs/logics/dismath/07-mathematical-induction-and-recursion.md).
+- **Ch. 08 (Hoare Logic Loop Correctness):** The invariant $\{I: \text{TaskInvariantsSatisfied} \land 0 \le \text{CurrentCounter} \le \text{TargetCounter}\}$ is maintained across every iteration. Reference: [`docs/logics/dismath/08-program-correctness-and-hoare-logic.md`](../../docs/logics/dismath/08-program-correctness-and-hoare-logic.md).
 
 ## 🛑 Rules
 - **Do not fake the counter:** You cannot just print "Counter is 3, I am done." You must actually stop your tool calls, evaluate, and explicitly track the counter in your internal thoughts or concise status updates.

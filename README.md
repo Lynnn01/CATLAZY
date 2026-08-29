@@ -255,16 +255,16 @@ Directories that cannot be classified are flagged as `[unclassified]` — a gap 
 
 The continuous loop is formally guaranteed to terminate via a **Well-Ordering Loop Variant**:
 
-$$V(i) = \text{TARGET\_COUNTER} - \text{CURRENT\_COUNTER},\quad V(i) \in \mathbb{N}$$
+$$V(i) = \text{TargetCounter} - \text{CurrentCounter},\quad V(i) \in \mathbb{N}$$
 
-- $V(0) = \text{TARGET\_COUNTER} > 0$
+- $V(0) = \text{TargetCounter} > 0$
 - On each clean (no-findings) iteration: $V(i+1) = V(i) - 1 \quad (\text{strictly decreasing})$
-- On each findings iteration: $\text{CURRENT\_COUNTER} \leftarrow 0,\; V$ resets (reset is permitted by the variant — only net progress increments it)
+- On each findings iteration: $\text{CurrentCounter} \leftarrow 0,\; V$ resets (reset is permitted by the variant — only net progress increments it)
 - **By the Well-Ordering Property of** $\mathbb{N}$: $V(i)$ must reach 0 in finite steps
 
 The loop also maintains the **Hoare Loop Invariant** (Ch. 08):
 
-$$\{I:\; \text{TaskInvariantsSatisfied} \land 0 \le \text{CURRENT\_COUNTER} \le \text{TARGET\_COUNTER}\}$$
+$$\{I:\; \text{TaskInvariantsSatisfied} \land 0 \le \text{CurrentCounter} \le \text{TargetCounter}\}$$
 
 ---
 
