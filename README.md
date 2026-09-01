@@ -14,7 +14,7 @@
 
 1. [What is Catlazy?](#-what-is-catlazy)
 2. [🧠 DISMATH: The Formal Reasoning Core](#-dismath-the-formal-reasoning-core)
-3. [🛠️ DISMATH × Skill Integration (Ch. 01–10)](#️-dismath--skill-integration-ch-0110)
+3. [🛠️ DISMATH × Skill Integration (Ch. 01–11)](#️-dismath--skill-integration-ch-0111)
 4. [🏗️ Project Structure](#️-project-structure)
 5. [🎚️ Operating Modes & Intensity](#️-operating-modes--intensity)
 6. [🌐 Cross-Platform Embedding](#-cross-platform-embedding-catlazy---embed)
@@ -78,7 +78,7 @@ YAGNI    →  ¬IsNeeded(F) ∴ ¬Build(F)               (Modus Tollens, Ch. 05)
 
 ---
 
-## 🛠️ DISMATH × Skill Integration (Ch. 01–10)
+## 🛠️ DISMATH × Skill Integration (Ch. 01–11)
 
 Each Catlazy skill maps directly to one or more DISMATH chapters. Below is the authoritative mapping:
 
@@ -268,6 +268,30 @@ $$\{I:\; \text{TaskInvariantsSatisfied} \land 0 \le \text{CurrentCounter} \le \t
 
 ---
 
+### `/catlazy11-flow` — End-to-End Flow Tracing & Formal Verification
+
+**DISMATH Ch. 01, 03–05, 07, 08, 10 (Multi-chapter Synthesis)**
+
+This skill proves that an execution flow is logically sound and vulnerability-free by applying six formal methods simultaneously. The core guarantee: every step's Post-condition entails the next step's Pre-condition — **logic does not stumble**.
+
+**Hoare Chain Composition (Ch. 08):**
+
+$$\frac{\{P_1\}\, S_1\, \{Q_1\} \;\land\; \{Q_1\}\, S_2\, \{Q_2\}}{\{P_1\}\, S_1; S_2\, \{Q_2\}} \quad \text{valid iff } Q_i \implies P_{i+1} \text{ for all } i$$
+
+A broken link $Q_i \not\implies P_{i+1}$ is a `[flow-gap]` or `[flow-hoare-mismatch]` finding.
+
+**Trust Guard Predicates (Ch. 03–04):**
+
+$$\forall r \in \text{Routes}:\; \neg\text{HasAuthGuard}(r) \implies \texttt{[flow-vuln-auth]}$$
+
+**Branch Completeness (Ch. 01–02):** All conditional outcomes (success, validation-error, auth-failure, not-found, server-error) must be handled. Missing cases are `[flow-branch-incomplete]`.
+
+**Loop Termination (Ch. 07):** Retry/polling flows require a Well-Ordering Variant $V(i) \in \mathbb{N}$. Absence is `[flow-loop-unbounded]`.
+
+**SAT Reachability (Ch. 10):** $\nexists \vec{x}: \text{Reach}(\text{State}, \vec{x}) \equiv \mathbf{T}$ identifies dead paths as `[flow-unreachable]`.
+
+---
+
 ## 🏗️ Project Structure
 
 ```text
@@ -278,7 +302,7 @@ $$\{I:\; \text{TaskInvariantsSatisfied} \land 0 \le \text{CurrentCounter} \le \t
 │   ├── design/          # UI tokens + UX interaction rules (propositional, Ch.01–02)
 │   ├── logics/dismath/  # DISMATH formal reasoning (Ch.01–10 + integration bridge Ch.11)
 │   └── plans/           # Hoare-Triple implementation plans {P} S {Q} (Ch.08)
-├── skills/              # Catlazy SDLC skills (0–10)
+├── skills/              # Catlazy SDLC skills (0–11)
 │   ├── catlazy/         # Intensity configuration & cross-platform embed
 │   ├── catlazy0-help/   # Reference guide
 │   ├── catlazy1-design/ # YAGNI gate + Hoare planning (Ch.05,06,08)
@@ -290,7 +314,8 @@ $$\{I:\; \text{TaskInvariantsSatisfied} \land 0 \le \text{CurrentCounter} \le \t
 │   ├── catlazy7-debt/         # Inductive debt bounds + vacuous safety (Ch.06,07,08)
 │   ├── catlazy8-agent/        # Rule SAT consistency + entailment (Ch.01,02,05)
 │   ├── catlazy9-tree/         # Predicate layer classification (Ch.03)
-│   └── catlazy10-loop/        # Well-Ordering termination loop (Ch.07,08)
+│   ├── catlazy10-loop/        # Well-Ordering termination loop (Ch.07,08)
+│   └── catlazy11-flow/        # E2E flow trace + vulnerability detection (Ch.01,03-05,07,08,10)
 └── plugin.json          # Plugin manifest for host AI environments
 ```
 

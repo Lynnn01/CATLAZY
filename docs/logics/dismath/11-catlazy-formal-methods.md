@@ -1,6 +1,6 @@
 # Catlazy Formal Methods: Discrete Mathematics Integration (DISMATH)
 
-This document establishes the formal mathematical grounding for the **Catlazy** development philosophy, architecture, agent rules, and SDLC skills (Commands 0–10). It serves as the bridge between theoretical Discrete Mathematics (based on Kenneth H. Rosen's *Discrete Mathematics and its Applications*) and agentic software engineering.
+This document establishes the formal mathematical grounding for the **Catlazy** development philosophy, architecture, agent rules, and SDLC skills (Commands 0–11). It serves as the bridge between theoretical Discrete Mathematics (based on Kenneth H. Rosen's *Discrete Mathematics and its Applications*) and agentic software engineering.
 
 ---
 
@@ -20,6 +20,7 @@ Every stage of the Catlazy workflow is grounded in formal logic from DISMATH Cha
 | **08** | Program Correctness & Hoare Logic | Global Planning Gate (`docs/plans/`, `catlazy1-design`), Debt Markers | Hoare Triples $\{P\} S \{Q\}$, Pre/Post-conditions, Invariants |
 | **09** | Boolean Algebra & Circuit Minimization | Over-engineering audit (`catlazy6-audit`), branch simplification | Boolean simplification (De Morgan, Absorption, Idempotence) |
 | **10** | SAT Modeling & Resolution Refutation | Dead code elimination (`catlazy6-audit`), Cross-platform rule SAT | Satisfiability $\varphi \not\equiv \mathbf{F}$, Resolution refutation $\neg Q \to \Box$ |
+| **01,03,04, 05,07,08,10** | Multi-chapter Synthesis | End-to-End Flow Tracing & Vulnerability Detection (`catlazy11-flow`) | Hoare Chain Composition, Predicate Trust Guards, Loop Variant, SAT Reachability |
 
 ---
 
@@ -121,8 +122,62 @@ To ensure sound reasoning, Catlazy agents are strictly forbidden from committing
 
 ---
 
+### 7. End-to-End Flow Tracing & Formal Verification (`/catlazy11-flow` — Multi-chapter Synthesis)
+
+`/catlazy11-flow` applies multiple DISMATH chapters simultaneously to prove that an execution flow is logically sound, vulnerability-free, and guaranteed to terminate.
+
+#### 7.1 Hoare Chain Composition (Ch. 08)
+
+A valid end-to-end flow is a chain of Hoare triples connected by the Sequential Composition Rule. For each adjacent step pair, the Post-condition of step $i$ must entail the Pre-condition of step $i+1$:
+
+$$\frac{\{P_1\}\, S_1\, \{Q_1\} \quad \land \quad \{Q_1\}\, S_2\, \{Q_2\}}{\{P_1\}\, S_1; S_2\, \{Q_2\}}$$
+
+Generalized for $n$ steps:
+
+$$\{P_1\}\, S_1; S_2; \dots; S_n\, \{Q_n\} \text{ is valid iff } Q_i \implies P_{i+1} \;\forall i \in \{1, \dots, n-1\}$$
+
+A broken link $Q_i \not\implies P_{i+1}$ is a `[flow-gap]` or `[flow-hoare-mismatch]` finding — the flow stumbles at that boundary.
+
+#### 7.2 Trust Guard Predicates (Ch. 03–04)
+
+Security invariants are expressed as universally quantified predicates over the set of all routes, handlers, and data boundaries:
+
+$$\text{SecureInv}: \forall r \in \text{Routes},\; \text{HasAuthGuard}(r) \land \text{HasInputValidation}(r) \land \text{HasTenantIsolation}(r)$$
+
+$$\text{TxInv}: \forall s \in \text{SideEffects},\; \text{InTransaction}(s) \land \text{IsIdempotent}(s)$$
+
+A counterexample $\exists r : \neg \text{SecureInv}(r)$ is a P1 vulnerability (`[flow-vuln-auth]` or `[flow-vuln-injection]`). A counterexample $\exists s : \neg \text{TxInv}(s)$ is `[flow-vuln-tx-leak]`.
+
+#### 7.3 Branch Completeness (Ch. 01–02)
+
+For any branching predicate $B$ with input domain $D$, the branch is complete iff all truth-value assignments are handled:
+
+$$\text{Complete}(B) \iff \forall v \in D,\; \exists h \in \text{Handlers}(B) : \text{Handles}(h, v)$$
+
+An incomplete truth table — missing `[validation-error]`, `[auth-failure]`, `[not-found]`, or `[server-error]` — is `[flow-branch-incomplete]`.
+
+#### 7.4 Loop Termination (Ch. 07)
+
+For any retry, polling, or recursive path, termination is proven via a Well-Ordering Loop Variant:
+
+$$V(i) = \text{MaxRetries} - \text{CurrentAttempt},\quad V(i) \in \mathbb{N}$$
+
+$$V(0) > 0 \quad \land \quad \forall i:\; V(i+1) < V(i)$$
+
+By the Well-Ordering Property of $\mathbb{N}$, the loop reaches $V = 0$ in finite steps. Absence of this variant is `[flow-loop-unbounded]`.
+
+#### 7.5 SAT Reachability (Ch. 10)
+
+Every declared execution path must be reachable by some satisfying input assignment:
+
+$$\forall \text{State} \in \text{Flow}:\; \exists \vec{x} : \text{Reach}(\text{State}, \vec{x}) \equiv \mathbf{T}$$
+
+If $\nexists \vec{x}: \text{Reach}(\text{State}, \vec{x}) \equiv \mathbf{T}$, the state is dead and reported as `[flow-unreachable]`.
+
+---
+
 ## 🔗 Cross-References
 
 - Complete DISMATH Reference: [`docs/logics/dismath/00-overview.md`](./00-overview.md)
-- Agent Operating Guidelines: [`.rules/AGENTS.md`](../../.rules/AGENTS.md)
-- Planning Gate Standard: [`docs/plans/`](../plans/)
+- Agent Operating Guidelines: [`.rules/AGENTS.md`](../../../.rules/AGENTS.md)
+- Planning Gate Standard: [`docs/plans/`](../../plans/)
